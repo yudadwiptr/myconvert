@@ -9,6 +9,10 @@ interface FormatPickerPopoverProps {
   currentTargetExt: string;
   onSelect: (newTargetExt: string) => void;
   onClose: () => void;
+  /** Override the list of selectable formats (e.g. formats shared by every queued file). */
+  availableOverride?: string[];
+  /** Override the search placeholder. */
+  searchPlaceholder?: string;
 }
 
 export const FormatPickerPopover: React.FC<FormatPickerPopoverProps> = ({
@@ -16,8 +20,13 @@ export const FormatPickerPopover: React.FC<FormatPickerPopoverProps> = ({
   currentTargetExt,
   onSelect,
   onClose,
+  availableOverride,
+  searchPlaceholder,
 }) => {
-  const availableExts = useMemo(() => getAvailableTargetFormats(sourceExt), [sourceExt]);
+  const availableExts = useMemo(
+    () => availableOverride ?? getAvailableTargetFormats(sourceExt),
+    [availableOverride, sourceExt]
+  );
   const [search, setSearch] = useState('');
 
   const availableCategories = useMemo(() => {
@@ -83,12 +92,13 @@ export const FormatPickerPopover: React.FC<FormatPickerPopoverProps> = ({
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder={`Cari format tujuan untuk .${sourceExt.toUpperCase()}...`}
+              placeholder={searchPlaceholder ?? `Cari format tujuan untuk .${sourceExt.toUpperCase()}...`}
               autoFocus
               className="w-full pl-9 pr-3 py-2 text-sm rounded-xl bg-white dark:bg-slate-950 border border-purple-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500"
             />
           </div>
           <button
+            type="button"
             onClick={onClose}
             className="px-3 py-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-purple-100/70 dark:hover:bg-slate-800 transition-colors"
           >

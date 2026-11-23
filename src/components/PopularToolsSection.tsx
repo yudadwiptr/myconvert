@@ -15,6 +15,10 @@ import {
   Sparkles,
   HelpCircle,
   LayoutGrid,
+  Upload,
+  MousePointerClick,
+  Download,
+  ChevronDown,
 } from 'lucide-react';
 import { CATEGORY_LABELS, FORMAT_REGISTRY, POPULAR_TOOLS } from '../data/formats';
 import { FormatCategory, PopularToolPreset } from '../types/converter';
@@ -156,6 +160,57 @@ export const PopularToolsSection: React.FC<PopularToolsSectionProps> = ({
         </div>
       </section>
 
+      {/* How it works */}
+      <section id="how-it-works" className="scroll-mt-24">
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+            Cara Kerja MyConvert
+          </h2>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-2 font-medium">
+            Tiga langkah, tanpa daftar akun, tanpa upload ke server.
+          </p>
+        </div>
+
+        <ol className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            {
+              icon: <Upload className="w-6 h-6" />,
+              title: 'Pilih file',
+              desc: 'Tarik & lepas atau pilih satu maupun banyak file sekaligus dari perangkat Anda.',
+            },
+            {
+              icon: <MousePointerClick className="w-6 h-6" />,
+              title: 'Tentukan format',
+              desc: 'Pilih format tujuan per file atau ubah semuanya sekaligus. Atur kualitas lewat ikon pengaturan.',
+            },
+            {
+              icon: <Download className="w-6 h-6" />,
+              title: 'Konversi & unduh',
+              desc: 'Proses berjalan langsung di browser. Unduh per file atau semua hasil dalam satu ZIP.',
+            },
+          ].map((step, i) => (
+            <li
+              key={step.title}
+              className="relative p-6 rounded-2xl smooth-theme bg-white/85 dark:bg-slate-900/75 border border-purple-200/80 dark:border-slate-800 shadow-sm"
+            >
+              <span className="absolute top-5 right-5 text-4xl font-extrabold text-purple-100 dark:text-slate-800 select-none" aria-hidden="true">
+                {i + 1}
+              </span>
+              <div className="w-11 h-11 rounded-xl bg-indigo-100 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-3">
+                {step.icon}
+              </div>
+              <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">
+                <span className="sr-only">Langkah {i + 1}: </span>
+                {step.title}
+              </h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium mt-1.5">
+                {step.desc}
+              </p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
       {/* 2. Why MyConvert (Unlimited Size + Hybrid Engine Explanation) */}
       <section id="features" className="scroll-mt-24">
         <div className="text-center max-w-2xl mx-auto mb-10">
@@ -266,7 +321,7 @@ export const PopularToolsSection: React.FC<PopularToolsSectionProps> = ({
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="max-w-3xl space-y-3">
           {[
             {
               q: 'Apakah MyConvert benar-benar tanpa batasan ukuran file (Unlimited Size)?',
@@ -285,17 +340,19 @@ export const PopularToolsSection: React.FC<PopularToolsSectionProps> = ({
               a: 'Ya, MyConvert dilengkapi dekoder HEIC/HEIF terintegrasi yang dapat langsung mengubah foto iPhone menjadi JPG, PNG, WebP, atau PDF.',
             },
           ].map((item, i) => (
-            <div
+            <details
               key={i}
-              className="p-5 rounded-2xl smooth-theme bg-white/85 dark:bg-slate-900/60 border border-purple-200/80 dark:border-slate-800 shadow-sm"
+              open={i === 0}
+              className="group rounded-2xl smooth-theme bg-white/85 dark:bg-slate-900/60 border border-purple-200/80 dark:border-slate-800 shadow-sm open:border-indigo-300 dark:open:border-indigo-500/40"
             >
-              <h3 className="text-sm font-extrabold text-slate-900 dark:text-white mb-2">
-                {item.q}
-              </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+              <summary className="flex items-center justify-between gap-4 cursor-pointer list-none p-5 [&::-webkit-details-marker]:hidden rounded-2xl focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/30">
+                <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white">{item.q}</h3>
+                <ChevronDown className="w-5 h-5 shrink-0 text-slate-400 transition-transform duration-300 group-open:rotate-180" />
+              </summary>
+              <p className="px-5 pb-5 -mt-1 text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
                 {item.a}
               </p>
-            </div>
+            </details>
           ))}
         </div>
       </section>

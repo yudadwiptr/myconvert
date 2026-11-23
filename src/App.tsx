@@ -88,6 +88,16 @@ function readSavedTheme(): 'pastel' | 'dark' {
   return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'pastel';
 }
 
+const ALL_JOBS_PICKER = '__all__';
+
+const FOOTER_GROUPS: { title: string; match: (t: PopularToolPreset) => boolean }[] = [
+  {
+    title: 'Dokumen & PDF',
+    match: (t) => ['document', 'spreadsheet', 'presentation', 'data', 'pdf-suite'].includes(t.category),
+  },
+  { title: 'Gambar & Media', match: (t) => ['image', 'audio', 'video'].includes(t.category) },
+];
+
 function getCategorySvgIcon(cat: FormatCategory) {
   switch (cat) {
     case 'document':
@@ -215,6 +225,9 @@ export function App() {
       const metaDesc = document.querySelector('meta[name="description"]');
       if (metaDesc) metaDesc.setAttribute('content', activePreset.seoDescription);
     } else {
+      if (window.location.search.includes('tool=')) {
+        window.history.replaceState(null, '', '/');
+      }
       document.title =
         'MyConvert — Konversi File Online Terlengkap Tanpa Batas Size (PDF, Word, Excel, PPT, Gambar, Video)';
     }
@@ -222,6 +235,11 @@ export function App() {
 
   const handleSelectPreset = (preset: PopularToolPreset, shouldScroll = true) => {
     setActivePreset(preset);
+    try {
+      window.history.replaceState(null, '', `/?tool=${preset.id}`);
+    } catch {
+      // ignore
+    }
     if (preset.category === 'pdf-suite' && preset.pdfSuiteMode) {
       setActiveTab('pdf-suite');
       setPdfSuiteMode(preset.pdfSuiteMode);
@@ -268,19 +286,41 @@ export function App() {
 
   const updateJobTargetFormat = (jobId: string, newTargetExt: string) => {
     setJobs((prev) =>
-      prev.map((j) =>
-        j.id === jobId
-          ? {
-              ...j,
-              targetExt: newTargetExt,
-              status: 'idle',
-              progress: 0,
-              resultBlob: undefined,
-              resultUrl: undefined,
-              errorMessage: undefined,
-            }
-          : j
-      )
+      prev.map((j) => {
+        if (j.id !== jobId || j.targetExt === newTargetExt) return j;
+        if (j.resultUrl) URL.revokeObjectURL(j.resultUrl);
+        return {
+          ...j,
+          targetExt: newTargetExt,
+          status: 'idle',
+          progress: 0,
+          resultBlob: undefined,
+          resultUrl: undefined,
+          resultFileName: undefined,
+          resultSize: undefined,
+          errorMessage: undefined,
+        };
+      })
+    );
+  };
+
+  const updateAllJobsTargetFormat = (newTargetExt: string) => {
+    setJobs((prev) =>
+      prev.map((j) => {
+        if (j.status === 'converting' || j.targetExt === newTargetExt) return j;
+        if (j.resultUrl) URL.revokeObjectURL(j.resultUrl);
+        return {
+          ...j,
+          targetExt: newTargetExt,
+          status: 'idle',
+          progress: 0,
+          resultBlob: undefined,
+          resultUrl: undefined,
+          resultFileName: undefined,
+          resultSize: undefined,
+          errorMessage: undefined,
+        };
+      })
     );
   };
 
@@ -426,6 +466,7 @@ export function App() {
     return intersection;
   }, [jobs]);
 
+  const allSameTarget = jobs.length > 0 && jobs.every((j) => j.targetExt === jobs[0].targetExt);
   const pickerJob = useMemo(() => jobs.find((j) => j.id === pickerJobId) || null, [jobs, pickerJobId]);
   const settingsJob = useMemo(() => jobs.find((j) => j.id === settingsJobId) || null, [jobs, settingsJobId]);
   const previewJob = useMemo(() => jobs.find((j) => j.id === previewJobId) || null, [jobs, previewJobId]);
@@ -482,34 +523,6 @@ export function App() {
             </span>
           </a>
 
-          {/* Center Mode Switcher */}
-          <div className="flex items-center p-1 rounded-2xl smooth-theme bg-purple-100/70 dark:bg-slate-900 border border-purple-200/80 dark:border-slate-800">
-            <button
-              type="button"
-              onClick={() => setActiveTab('converter')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-1.5 ${
-                activeTab === 'converter'
-                  ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-500/20'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-white'
-              }`}
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-              <span>File Converter</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('pdf-suite')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-1.5 ${
-                activeTab === 'pdf-suite'
-                  ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-500/20'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-white'
-              }`}
-            >
-              <Layers className="w-3.5 h-3.5" />
-              <span>PDF Power Suite</span>
-            </button>
-          </div>
-
           {/* Right Quick Nav + Smooth Theme Switcher */}
           <div className="flex items-center gap-4">
             <nav className="hidden lg:flex items-center gap-5 text-xs font-bold text-slate-600 dark:text-slate-300">
@@ -532,7 +545,7 @@ export function App() {
               onClick={handleToggleTheme}
               title="Ganti Tema Pastel Light / Cyber Dark"
               aria-label="Toggle Theme"
-              className="group relative inline-flex items-center gap-2.5 p-1 pr-3.5 rounded-full text-xs font-extrabold border smooth-theme bg-purple-100/80 hover:bg-purple-100 border-purple-200/90 text-purple-950 shadow-sm dark:bg-slate-900 dark:hover:bg-slate-800/90 dark:border-slate-700/90 dark:text-slate-200"
+              className="group relative inline-flex items-center gap-2.5 p-1 sm:pr-3.5 rounded-full text-xs font-extrabold border smooth-theme bg-purple-100/80 hover:bg-purple-100 border-purple-200/90 text-purple-950 shadow-sm dark:bg-slate-900 dark:hover:bg-slate-800/90 dark:border-slate-700/90 dark:text-slate-200"
             >
               {/* Animated Icon Badge */}
               <span
@@ -557,7 +570,7 @@ export function App() {
                   }`}
                 />
               </span>
-              <span className="tracking-tight transition-colors duration-300">
+              <span className="hidden sm:inline tracking-tight transition-colors duration-300">
                 {theme === 'pastel' ? 'Pastel Mode' : 'Dark Mode'}
               </span>
             </button>
@@ -626,7 +639,38 @@ export function App() {
         </section>
 
         {/* Active Workspace: Universal Converter OR PDF Power Suite */}
-        <section ref={workspaceRef} className="scroll-mt-20">
+        <section ref={workspaceRef} className="scroll-mt-20 space-y-5">
+          <div className="flex justify-center">
+            <div
+              role="tablist"
+              aria-label="Mode alat"
+              className="inline-flex items-center p-1 rounded-2xl smooth-theme bg-white/80 dark:bg-slate-900 border border-purple-200/80 dark:border-slate-800 shadow-sm"
+            >
+              {(
+                [
+                  { id: 'converter', label: 'File Converter', icon: <RefreshCw className="w-4 h-4" /> },
+                  { id: 'pdf-suite', label: 'PDF Power Suite', icon: <Layers className="w-4 h-4" /> },
+                ] as const
+              ).map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-4 sm:px-5 py-2 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2 ${
+                    activeTab === tab.id
+                      ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-500/20'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-white'
+                  }`}
+                >
+                  {tab.icon}
+                  <span>{tab.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
           {activeTab === 'pdf-suite' ? (
             <Suspense
               fallback={
@@ -769,7 +813,7 @@ export function App() {
 
               {/* Queued Files List */}
               {jobs.length > 0 && (
-                <div className="p-4 sm:p-6 space-y-4">
+                <div className="p-3 sm:p-6 space-y-4">
                   {/* Top Batch Toolbar */}
                   <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-purple-100 dark:border-slate-800">
                     <div className="flex items-center gap-3">
@@ -785,47 +829,20 @@ export function App() {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2.5">
-                      {/* Convert All To Selector */}
+                      {/* Convert All To */}
                       {jobs.length > 1 && commonTargetFormats.length > 0 && (
-                        <div className="flex items-center gap-2 bg-purple-50 dark:bg-slate-950 border border-purple-200 dark:border-slate-800 rounded-xl px-3 py-1.5">
-                          <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">
-                            Ubah semua ke:
+                        <button
+                          type="button"
+                          onClick={() => setPickerJobId(ALL_JOBS_PICKER)}
+                          disabled={convertingCount > 0}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-purple-50 dark:bg-slate-950 border border-purple-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-indigo-400 smooth-theme disabled:opacity-60"
+                        >
+                          <span>Ubah semua ke</span>
+                          <span className="font-mono font-extrabold text-indigo-600 dark:text-indigo-400 uppercase">
+                            {allSameTarget ? `.${jobs[0].targetExt}` : '...'}
                           </span>
-                          <select
-                            value=""
-                            onChange={(e) => {
-                              const val = e.target.value;
-                              if (!val) return;
-                              setJobs((prev) =>
-                                prev.map((j) => {
-                                  if (j.status === 'converting' || j.targetExt === val) return j;
-                                  if (j.resultUrl) URL.revokeObjectURL(j.resultUrl);
-                                  return {
-                                    ...j,
-                                    targetExt: val,
-                                    status: 'idle',
-                                    progress: 0,
-                                    resultBlob: undefined,
-                                    resultUrl: undefined,
-                                    resultFileName: undefined,
-                                    resultSize: undefined,
-                                    errorMessage: undefined,
-                                  };
-                                })
-                              );
-                            }}
-                            className="bg-transparent text-xs font-extrabold text-indigo-600 dark:text-indigo-400 focus:outline-none uppercase cursor-pointer"
-                          >
-                            <option value="" className="bg-white dark:bg-slate-900 text-slate-500">
-                              Pilih...
-                            </option>
-                            {commonTargetFormats.map((ext) => (
-                              <option key={ext} value={ext} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
-                                .{ext.toUpperCase()}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
+                          <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+                        </button>
                       )}
 
                       <button
@@ -848,165 +865,188 @@ export function App() {
                     </div>
                   </div>
 
-                  {/* Individual File Rows */}
-                  <div className="space-y-2.5">
+                  {/* Individual File Cards */}
+                  <ul className="space-y-2.5">
                     {jobs.map((job) => {
                       const srcInfo = FORMAT_REGISTRY[job.sourceExt];
                       const dstInfo = FORMAT_REGISTRY[job.targetExt];
 
                       return (
-                        <div
+                        <li
                           key={job.id}
-                          className="rounded-2xl smooth-theme bg-purple-50/55 dark:bg-slate-950/85 border border-purple-200/80 dark:border-slate-800/90 hover:border-purple-300 dark:hover:border-slate-700/80 p-3.5 sm:px-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4"
+                          className={`relative overflow-hidden rounded-2xl smooth-theme border ${
+                            job.status === 'error'
+                              ? 'bg-rose-50/60 dark:bg-rose-950/20 border-rose-200 dark:border-rose-500/30'
+                              : 'bg-purple-50/55 dark:bg-slate-950/85 border-purple-200/80 dark:border-slate-800/90 hover:border-purple-300 dark:hover:border-slate-700/80'
+                          }`}
                         >
-                          {/* Left: File icon, name & source badge */}
-                          <div className="flex items-center gap-3 min-w-0 flex-1">
-                            <span
-                              className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-mono font-extrabold uppercase border shrink-0 ${
-                                srcInfo?.badgeColor ||
-                                'bg-slate-200 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
-                              }`}
-                            >
-                              {getCategorySvgIcon(job.sourceCategory)}
-                              <span>.{job.sourceExt}</span>
-                            </span>
-                            <div className="min-w-0 flex-1">
-                              <div
-                                className="text-sm font-bold text-slate-900 dark:text-white truncate"
-                                title={job.file.name}
+                          <div className="flex flex-wrap items-center gap-x-2 sm:gap-x-3 gap-y-3 p-3 sm:p-3.5 sm:px-5">
+                            {/* File info */}
+                            <div className="flex items-center gap-3 min-w-0 basis-full sm:basis-0 sm:flex-1">
+                              <span
+                                className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-mono font-extrabold uppercase border shrink-0 ${
+                                  srcInfo?.badgeColor ||
+                                  'bg-slate-200 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
+                                }`}
                               >
-                                {job.file.name}
-                              </div>
-                              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
-                                <span>{formatBytes(job.file.size)}</span>
-                                {job.resultSize && (
-                                  <>
-                                    <ArrowRight className="w-3 h-3 text-slate-400" />
-                                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">
-                                      {formatBytes(job.resultSize)}
+                                {getCategorySvgIcon(job.sourceCategory)}
+                                <span>.{job.sourceExt}</span>
+                              </span>
+                              <div className="min-w-0 flex-1">
+                                <div
+                                  className="text-sm font-bold text-slate-900 dark:text-white truncate"
+                                  title={job.file.name}
+                                >
+                                  {job.file.name}
+                                </div>
+                                <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium min-w-0">
+                                  <span className="shrink-0">{formatBytes(job.file.size)}</span>
+                                  {job.status === 'done' && job.resultSize !== undefined && (
+                                    <>
+                                      <ArrowRight className="w-3 h-3 text-slate-400 shrink-0" />
+                                      <span className="text-emerald-600 dark:text-emerald-400 font-bold shrink-0">
+                                        {formatBytes(job.resultSize)}
+                                      </span>
+                                    </>
+                                  )}
+                                  {job.status === 'converting' && (
+                                    <span className="truncate text-indigo-600 dark:text-indigo-300">
+                                      · {job.statusMessage || 'Memproses...'}
                                     </span>
-                                  </>
-                                )}
+                                  )}
+                                </div>
                               </div>
                             </div>
-                          </div>
 
-                          {/* Middle: Target Format Picker & Settings Gear */}
-                          <div className="flex items-center gap-2.5 shrink-0">
-                            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                              ubah ke
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() => setPickerJobId(job.id)}
-                              className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-mono font-extrabold uppercase smooth-theme ${
-                                dstInfo?.badgeColor ||
-                                'bg-indigo-100 text-indigo-700 border-indigo-300 dark:bg-indigo-600/20 dark:text-indigo-300 dark:border-indigo-500/30'
-                              } hover:scale-105`}
-                            >
-                              <span>.{job.targetExt}</span>
-                              <ChevronDown className="w-3.5 h-3.5 opacity-80" />
-                            </button>
-
-                            <button
-                              type="button"
-                              onClick={() => setSettingsJobId(job.id)}
-                              title="Pengaturan Lanjutan (Kualitas, DPI, Mode PDF ke Word, Resize)"
-                              aria-label="Pengaturan lanjutan"
-                              className="p-2 rounded-xl smooth-theme bg-white dark:bg-slate-900 border border-purple-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-white hover:border-indigo-400"
-                            >
-                              <Sliders className="w-4 h-4" />
-                            </button>
-                          </div>
-
-                          {/* Right: Status / Progress / Actions */}
-                          <div className="flex items-center justify-between lg:justify-end gap-3 lg:min-w-[270px]">
-                            {job.status === 'idle' && (
+                            {/* Target format + settings */}
+                            <div className="flex items-center gap-2 shrink-0">
+                              <span className="hidden sm:inline text-xs font-semibold text-slate-500 dark:text-slate-400">ke</span>
                               <button
                                 type="button"
-                                onClick={() => runSingleJob(job)}
-                                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-100 text-indigo-700 border border-indigo-300 hover:bg-indigo-600 hover:text-white dark:bg-indigo-600/20 dark:text-indigo-300 dark:border-indigo-500/30 dark:hover:bg-indigo-600 dark:hover:text-white smooth-theme"
+                                onClick={() => setPickerJobId(job.id)}
+                                disabled={job.status === 'converting'}
+                                aria-label={`Format tujuan ${job.targetExt.toUpperCase()}, ganti format`}
+                                className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-mono font-extrabold uppercase smooth-theme disabled:opacity-60 ${
+                                  dstInfo?.badgeColor ||
+                                  'bg-indigo-100 text-indigo-700 border-indigo-300 dark:bg-indigo-600/20 dark:text-indigo-300 dark:border-indigo-500/30'
+                                }`}
                               >
-                                <Play className="w-3.5 h-3.5" />
-                                <span>Konversi</span>
+                                <span>.{job.targetExt}</span>
+                                <ChevronDown className="w-3.5 h-3.5 opacity-80" />
                               </button>
-                            )}
+                              <button
+                                type="button"
+                                onClick={() => setSettingsJobId(job.id)}
+                                disabled={job.status === 'converting'}
+                                title="Pengaturan lanjutan (kualitas, DPI, mode PDF ke Word, resize)"
+                                aria-label="Pengaturan lanjutan"
+                                className="p-2 rounded-xl smooth-theme bg-white dark:bg-slate-900 border border-purple-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-white hover:border-indigo-400 disabled:opacity-60"
+                              >
+                                <Sliders className="w-4 h-4" />
+                              </button>
+                            </div>
 
-                            {job.status === 'converting' && (
-                              <div className="flex-1 max-w-[220px] space-y-1">
-                                <div className="flex items-center justify-between text-[11px]">
-                                  <span className="text-indigo-600 dark:text-indigo-300 font-semibold truncate">
-                                    {job.statusMessage || 'Memproses...'}
-                                  </span>
-                                  <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400">
-                                    {job.progress}%
-                                  </span>
-                                </div>
-                                <div className="w-full h-2 rounded-full bg-purple-200/70 dark:bg-slate-800 overflow-hidden">
-                                  <div
-                                    className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 transition-all duration-300"
-                                    style={{ width: `${job.progress}%` }}
-                                  />
-                                </div>
-                              </div>
-                            )}
-
-                            {job.status === 'done' && (
-                              <div className="flex items-center gap-2">
-                                <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 mr-1">
-                                  <CheckCircle2 className="w-4 h-4" />
-                                  <span className="hidden sm:inline">Selesai</span>
-                                </span>
-                                <button
-                                  type="button"
-                                  onClick={() => setPreviewJobId(job.id)}
-                                  title="Lihat Pratinjau Hasil"
-                                  className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold smooth-theme bg-white dark:bg-slate-900 border border-purple-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-slate-800"
-                                >
-                                  <Eye className="w-3.5 h-3.5" />
-                                  <span>Preview</span>
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => handleDownloadJob(job)}
-                                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 smooth-theme"
-                                >
-                                  <Download className="w-3.5 h-3.5" />
-                                  <span>Download</span>
-                                </button>
-                              </div>
-                            )}
-
-                            {job.status === 'error' && (
-                              <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 text-xs">
-                                <AlertCircle className="w-4 h-4 shrink-0" />
-                                <span className="truncate max-w-[160px]" title={job.errorMessage}>
-                                  {job.errorMessage || 'Gagal'}
-                                </span>
+                            {/* Status actions */}
+                            <div className="flex items-center gap-1.5 ml-auto shrink-0">
+                              {job.status === 'idle' && (
                                 <button
                                   type="button"
                                   onClick={() => runSingleJob(job)}
-                                  className="px-2.5 py-1 rounded-lg bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-200 font-bold hover:bg-rose-200"
+                                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-100 text-indigo-700 border border-indigo-300 hover:bg-indigo-600 hover:text-white dark:bg-indigo-600/20 dark:text-indigo-300 dark:border-indigo-500/30 dark:hover:bg-indigo-600 dark:hover:text-white smooth-theme"
                                 >
-                                  Ulangi
+                                  <Play className="w-3.5 h-3.5" />
+                                  <span>Konversi</span>
                                 </button>
-                              </div>
-                            )}
+                              )}
 
-                            <button
-                              type="button"
-                              onClick={() => removeJob(job.id)}
-                              title="Hapus dari daftar"
-                              aria-label="Hapus dari daftar"
-                              className="p-2 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-slate-900 smooth-theme"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
+                              {job.status === 'converting' && (
+                                <span className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-mono font-bold text-indigo-600 dark:text-indigo-300">
+                                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                  {job.progress}%
+                                </span>
+                              )}
+
+                              {job.status === 'done' && (
+                                <>
+                                  <CheckCircle2
+                                    className="hidden sm:block w-5 h-5 text-emerald-600 dark:text-emerald-400 mr-1"
+                                    aria-label="Selesai"
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => setPreviewJobId(job.id)}
+                                    title="Lihat pratinjau hasil"
+                                    aria-label="Lihat pratinjau hasil"
+                                    className="p-2 rounded-xl smooth-theme bg-white dark:bg-slate-900 border border-purple-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-slate-800"
+                                  >
+                                    <Eye className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDownloadJob(job)}
+                                    className="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 smooth-theme"
+                                  >
+                                    <Download className="w-3.5 h-3.5" />
+                                    <span>Unduh</span>
+                                  </button>
+                                </>
+                              )}
+
+                              {job.status === 'error' && (
+                                <button
+                                  type="button"
+                                  onClick={() => runSingleJob(job)}
+                                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200 hover:bg-rose-200 dark:bg-rose-500/20 dark:text-rose-200 dark:border-rose-500/30 smooth-theme"
+                                >
+                                  <RefreshCw className="w-3.5 h-3.5" />
+                                  <span>Ulangi</span>
+                                </button>
+                              )}
+
+                              <button
+                                type="button"
+                                onClick={() => removeJob(job.id)}
+                                disabled={job.status === 'converting'}
+                                title="Hapus dari daftar"
+                                aria-label="Hapus dari daftar"
+                                className="p-2 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-slate-900 smooth-theme disabled:opacity-40"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
                           </div>
-                        </div>
+
+                          {/* Full error message */}
+                          {job.status === 'error' && (
+                            <div
+                              role="alert"
+                              className="flex items-start gap-2 px-3 sm:px-5 pb-3.5 -mt-1 text-xs font-medium text-rose-700 dark:text-rose-300"
+                            >
+                              <AlertCircle className="w-4 h-4 shrink-0 mt-px" />
+                              <span className="break-words">{job.errorMessage || 'Gagal mengonversi file.'}</span>
+                            </div>
+                          )}
+
+                          {/* Thin progress bar */}
+                          {job.status === 'converting' && (
+                            <div
+                              className="absolute inset-x-0 bottom-0 h-1 bg-purple-200/60 dark:bg-slate-800"
+                              role="progressbar"
+                              aria-valuemin={0}
+                              aria-valuemax={100}
+                              aria-valuenow={job.progress}
+                              aria-label={`Progres konversi ${job.file.name}`}
+                            >
+                              <div
+                                className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 transition-all duration-300"
+                                style={{ width: `${job.progress}%` }}
+                              />
+                            </div>
+                          )}
+                        </li>
                       );
                     })}
-                  </div>
+                  </ul>
 
                   {/* Bottom Master Action Bar */}
                   <div className="pt-3 flex flex-wrap items-center justify-between gap-4 border-t border-purple-100 dark:border-slate-800/80">
@@ -1070,20 +1110,49 @@ export function App() {
       </main>
 
       {/* Footer */}
-      <footer className="smooth-theme border-t border-purple-200/70 dark:border-slate-800/80 bg-white/75 dark:bg-slate-950/80 backdrop-blur-xl py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
-          <div className="flex items-center gap-3">
+      <footer className="smooth-theme border-t border-purple-200/70 dark:border-slate-800/80 bg-white/75 dark:bg-slate-950/80 backdrop-blur-xl">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="col-span-2 space-y-3">
             <MyConvertLogo size="sm" />
-            <span>— Platform Konversi File Tanpa Batas Size</span>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-3 font-medium">
-            <span className="inline-flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-              <span>Zero-Upload Privacy</span>
+            <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-xs">
+              Konversi dokumen, gambar, audio & video langsung di browser. Gratis, tanpa watermark, file tidak pernah diunggah.
+            </p>
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              Zero-Upload Privacy
             </span>
-            <span className="w-1 h-1 rounded-full bg-purple-300 dark:bg-slate-700" />
+          </div>
+
+          {FOOTER_GROUPS.map((group) => (
+            <nav key={group.title} aria-label={group.title}>
+              <h2 className="text-xs font-extrabold uppercase tracking-wider text-slate-900 dark:text-white mb-3">
+                {group.title}
+              </h2>
+              <ul className="space-y-2">
+                {POPULAR_TOOLS.filter(group.match).map((tool) => (
+                  <li key={tool.id}>
+                    <a
+                      href={`/?tool=${tool.id}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleSelectPreset(tool, true);
+                      }}
+                      className="text-sm text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
+                    >
+                      {tool.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))}
+        </div>
+
+        <div className="border-t border-purple-200/60 dark:border-slate-800/80">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
+            <span>© {new Date().getFullYear()} MyConvert</span>
             <span>
-              Build by{' '}
+              Dibuat oleh{' '}
               <a
                 href="https://yumastudio.digital/"
                 target="_blank"
@@ -1098,6 +1167,17 @@ export function App() {
       </footer>
 
       {/* Popovers & Modals */}
+      {pickerJobId === ALL_JOBS_PICKER && (
+        <FormatPickerPopover
+          sourceExt={jobs[0]?.sourceExt ?? ''}
+          currentTargetExt={allSameTarget ? jobs[0].targetExt : ''}
+          availableOverride={commonTargetFormats}
+          searchPlaceholder={`Cari format untuk ${jobs.length} file...`}
+          onSelect={updateAllJobsTargetFormat}
+          onClose={() => setPickerJobId(null)}
+        />
+      )}
+
       {pickerJob && (
         <FormatPickerPopover
           sourceExt={pickerJob.sourceExt}
