@@ -52,9 +52,14 @@
 }
 
 /* ============================================================================
-   ULTRA-SMOOTH THEME TRANSITION ENGINE
-   1. Native View Transitions API (smooth feathered circular reveal / cross-fade)
-   2. Universal synchronized property interpolation when toggling theme
+   THEME SWITCH
+   With View Transitions (Chrome/Edge/Safari 18+): the browser snapshots the
+   old and new page and we reveal the new one with a single GPU clip-path
+   animation. Every CSS transition is switched off while that happens
+   (.theme-switching), so the "new" snapshot is the final state and nothing
+   repaints underneath the reveal.
+   Without View Transitions (Firefox): a short, cheap color cross-fade
+   (.theme-fading) limited to colors.
    ============================================================================ */
 ::view-transition-old(root),
 ::view-transition-new(root) {
@@ -70,14 +75,20 @@
   z-index: 9999;
 }
 
-/* Synchronized smooth interpolation across all DOM elements during theme change */
-html.theme-transitioning,
-html.theme-transitioning *,
-html.theme-transitioning *::before,
-html.theme-transitioning *::after {
-  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform !important;
-  transition-duration: 480ms !important;
-  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1) !important;
+html.theme-switching,
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+  transition: none !important;
+}
+
+html.theme-fading,
+html.theme-fading *,
+html.theme-fading *::before,
+html.theme-fading *::after {
+  transition-property: background-color, border-color, color, fill, stroke !important;
+  transition-duration: 260ms !important;
+  transition-timing-function: ease-out !important;
 }
 
 /* Smooth interactive transition helper for cards, borders, and buttons */

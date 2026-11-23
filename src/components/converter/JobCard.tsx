@@ -48,11 +48,11 @@ export const JobCard: React.FC<JobCardProps> = ({
           : 'bg-sunken/55 border-line/80 hover:border-purple-300 dark:hover:border-slate-700/80'
       }`}
     >
-      <div className="flex flex-wrap items-center gap-x-2 sm:gap-x-3 gap-y-3 p-3 sm:p-3.5 sm:px-5">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-3 p-3 sm:grid sm:grid-cols-[minmax(0,1fr)_auto_12.5rem] sm:gap-x-4 sm:py-3.5 sm:px-5">
         {/* File info */}
-        <div className="flex items-center gap-3 min-w-0 basis-full sm:basis-0 sm:flex-1">
+        <div className="flex items-center gap-3 min-w-0 basis-full">
           <span
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-mono font-extrabold uppercase border shrink-0 ${
+            className={`inline-flex items-center justify-center gap-1.5 min-w-[5.25rem] px-2.5 py-1.5 rounded-xl text-xs font-mono font-extrabold uppercase border shrink-0 ${
               srcInfo?.badgeColor ||
               'bg-slate-200 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
             }`}
@@ -89,7 +89,7 @@ export const JobCard: React.FC<JobCardProps> = ({
             onClick={onPickFormat}
             disabled={isConverting}
             aria-label={`Format tujuan ${job.targetExt.toUpperCase()}, ganti format`}
-            className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-mono font-extrabold uppercase smooth-theme disabled:opacity-60 ${
+            className={`inline-flex items-center justify-between gap-1.5 sm:min-w-[5.5rem] px-3 py-2 rounded-xl border text-xs font-mono font-extrabold uppercase smooth-theme disabled:opacity-60 ${
               dstInfo?.badgeColor ||
               'bg-indigo-100 text-indigo-700 border-indigo-300 dark:bg-indigo-600/20 dark:text-indigo-300 dark:border-indigo-500/30'
             }`}
@@ -110,7 +110,7 @@ export const JobCard: React.FC<JobCardProps> = ({
         </div>
 
         {/* Status actions */}
-        <div className="flex items-center gap-1.5 ml-auto shrink-0">
+        <div className="flex items-center justify-end gap-1.5 ml-auto sm:ml-0 shrink-0">
           {job.status === 'idle' && (
             <button
               type="button"
@@ -182,9 +182,9 @@ export const JobCard: React.FC<JobCardProps> = ({
       {job.status === 'error' && (
         <div
           role="alert"
-          className="flex items-start gap-2 px-3 sm:px-5 pb-3.5 -mt-1 text-xs font-medium text-rose-700 dark:text-rose-300"
+          className="flex items-start gap-1.5 pl-[6.75rem] pr-3 sm:pl-[7.25rem] sm:pr-5 pb-3.5 -mt-1.5 text-xs font-medium text-rose-700 dark:text-rose-300"
         >
-          <AlertCircle className="w-4 h-4 shrink-0 mt-px" />
+          <AlertCircle className="w-3.5 h-3.5 shrink-0 mt-px" />
           <span className="break-words">{job.errorMessage || 'Gagal mengonversi file.'}</span>
         </div>
       )}

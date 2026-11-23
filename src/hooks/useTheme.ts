@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 
 export type Theme = 'pastel' | 'dark';
 
@@ -14,23 +15,31 @@ function readSavedTheme(): Theme {
   return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'pastel';
 }
 
+/** Latest switch in flight, so an older one's cleanup can't unfreeze a newer reveal. */
+let latestSwitch = 0;
+
 function applyThemeClass(theme: Theme) {
   document.documentElement.classList.toggle('dark', theme === 'dark');
 }
 
 /**
  * Theme state: follows the OS preference until the user picks one explicitly,
- * and animates the switch with a circular View Transition from the toggle.
+ * and animates the switch with a circular View Transition from the toggle
+ * (or a short color fade where View Transitions are unsupported).
  */
 export function useTheme() {
   const [theme, setTheme] = useState<Theme>(readSavedTheme);
+  // The theme the user last asked for. Updated synchronously on click, so rapid
+  // toggles alternate correctly even before a pending transition has applied.
+  const targetRef = useRef<Theme>(theme);
 
   useEffect(() => {
     applyThemeClass(theme);
   }, [theme]);
 
   const toggleTheme = (e: React.MouseEvent<HTMLElement>) => {
-    const nextTheme: Theme = theme === 'pastel' ? 'dark' : 'pastel';
+    const nextTheme: Theme = targetRef.current === 'pastel' ? 'dark' : 'pastel';
+    targetRef.current = nextTheme;
     try {
       localStorage.setItem(STORAGE_KEY, nextTheme);
     } catch {
@@ -38,43 +47,57 @@ export function useTheme() {
     }
     const root = document.documentElement;
 
-    // Synchronized CSS transition for browsers without View Transitions
-    root.classList.add('theme-transitioning');
-    window.setTimeout(() => root.classList.remove('theme-transitioning'), 520);
-
-    const docWithVT = document as Document & {
-      startViewTransition?: (cb: () => void) => { ready: Promise<void> };
-    };
-
-    if (!docWithVT.startViewTransition || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      applyThemeClass(nextTheme);
       setTheme(nextTheme);
       return;
     }
 
+    const docWithVT = document as Document & {
+      startViewTransition?: (cb: () => void) => { ready: Promise<void>; finished: Promise<void> };
+    };
+
+    // Fallback (no View Transitions): short color-only cross-fade.
+    if (!docWithVT.startViewTransition) {
+      root.classList.add('theme-fading');
+      applyThemeClass(nextTheme);
+      setTheme(nextTheme);
+      window.setTimeout(() => root.classList.remove('theme-fading'), 300);
+      return;
+    }
+
+    // View Transitions: freeze all CSS transitions so the new snapshot is the
+    // final state, then reveal it with one clip-path animation from the toggle.
     const rect = e.currentTarget.getBoundingClientRect();
     const x = rect.left + rect.width / 2;
     const y = rect.top + rect.height / 2;
     const endRadius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
 
+    const switchId = ++latestSwitch;
+    root.classList.add('theme-switching');
     const transition = docWithVT.startViewTransition(() => {
       applyThemeClass(nextTheme);
-      setTheme(nextTheme);
+      flushSync(() => setTheme(nextTheme));
     });
 
     transition.ready
       .then(() => {
         root.animate(
+          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`] },
           {
-            clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${endRadius}px at ${x}px ${y}px)`],
-          },
-          {
-            duration: 520,
-            easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+            duration: 650,
+            easing: 'cubic-bezier(0.65, 0, 0.35, 1)',
             pseudoElement: '::view-transition-new(root)',
           }
         );
       })
       .catch(() => {});
+
+    transition.finished
+      .catch(() => {})
+      .finally(() => {
+        if (switchId === latestSwitch) root.classList.remove('theme-switching');
+      });
   };
 
   return { theme, toggleTheme };
