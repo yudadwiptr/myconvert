@@ -2,14 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================================
+   DESIGN TOKENS
+   Semantic colors as RGB triplets so Tailwind opacity modifiers work
+   (e.g. bg-surface/80). Components use the token names; each theme only
+   redefines the values here.
+   ============================================================================ */
 @layer base {
+  :root {
+    /* Pastel (light) */
+    --canvas: 250 248 255;       /* page background */
+    --surface: 255 255 255;      /* cards, panels, inputs */
+    --sunken: 250 245 255;       /* rows & wells inside a surface */
+    --line: 233 213 255;         /* default borders */
+    --line-soft: 243 232 255;    /* dividers inside a surface */
+    --fg: 15 23 42;              /* headings & primary text */
+    --fg-soft: 51 65 85;         /* secondary text */
+    --fg-muted: 71 85 105;       /* hints, metadata */
+    --accent: 79 70 229;         /* links, active text, focus */
+    --scrollbar-track: 250 245 255;
+    --scrollbar-thumb: 216 180 254;
+    --scrollbar-thumb-hover: 192 132 252;
+  }
+
+  .dark {
+    /* Cyber dark */
+    --canvas: 7 11 20;
+    --surface: 15 23 42;
+    --sunken: 2 6 23;
+    --line: 30 41 59;
+    --line-soft: 30 41 59;
+    --fg: 248 250 252;
+    --fg-soft: 203 213 225;
+    --fg-muted: 148 163 184;
+    --accent: 129 140 248;
+    --scrollbar-track: 9 13 22;
+    --scrollbar-thumb: 30 41 59;
+    --scrollbar-thumb-hover: 51 65 85;
+  }
+
   html {
     scroll-behavior: smooth;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   }
 
   body {
-    @apply bg-[#FAF8FF] text-slate-900 dark:bg-[#070B14] dark:text-slate-100;
+    @apply bg-canvas text-fg;
   }
 }
 
@@ -71,23 +109,13 @@ html.theme-transitioning *::after {
   width: 8px;
   height: 8px;
 }
-html.dark ::-webkit-scrollbar-track {
-  background: #090d16;
+::-webkit-scrollbar-track {
+  background: rgb(var(--scrollbar-track));
 }
-html.dark ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--scrollbar-thumb));
   border-radius: 9999px;
 }
-html.dark ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
-}
-html:not(.dark) ::-webkit-scrollbar-track {
-  background: #faf5ff;
-}
-html:not(.dark) ::-webkit-scrollbar-thumb {
-  background: #d8b4fe;
-  border-radius: 9999px;
-}
-html:not(.dark) ::-webkit-scrollbar-thumb:hover {
-  background: #c084fc;
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--scrollbar-thumb-hover));
 }

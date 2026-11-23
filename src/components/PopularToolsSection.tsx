@@ -56,9 +56,9 @@ export const PopularToolsSection: React.FC<PopularToolsSectionProps> = ({
       case 'data':
         return <Code2 className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />;
       case 'pdf-suite':
-        return <Layers className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />;
+        return <Layers className="w-5 h-5 text-accent" />;
       default:
-        return <FileText className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />;
+        return <FileText className="w-5 h-5 text-accent" />;
     }
   };
 
@@ -86,10 +86,10 @@ export const PopularToolsSection: React.FC<PopularToolsSectionProps> = ({
               <Sparkles className="w-3.5 h-3.5" />
               <span>Konverter Terlengkap All-in-One</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-fg tracking-tight">
               Pilih Alat Konversi Cepat
             </h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 font-medium">
+            <p className="text-sm text-fg-muted mt-1 font-medium">
               Klik salah satu alat di bawah untuk mengatur format tujuan secara otomatis
             </p>
           </div>
@@ -104,7 +104,7 @@ export const PopularToolsSection: React.FC<PopularToolsSectionProps> = ({
                 className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold smooth-theme ${
                   selectedCat === tab.id
                     ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-500/20'
-                    : 'bg-white/85 dark:bg-slate-900 text-slate-600 dark:text-slate-400 border border-purple-200/80 dark:border-slate-800 hover:border-purple-300 dark:hover:text-white'
+                    : 'bg-surface text-fg-muted border border-line hover:border-purple-300 dark:hover:text-white'
                 }`}
               >
                 {tab.icon}
@@ -125,12 +125,12 @@ export const PopularToolsSection: React.FC<PopularToolsSectionProps> = ({
                 className={`group relative p-5 rounded-2xl border text-left smooth-theme flex flex-col justify-between ${
                   isSelected
                     ? 'bg-indigo-50/95 dark:bg-indigo-600/15 border-indigo-500 shadow-lg shadow-indigo-500/15'
-                    : 'bg-white/85 dark:bg-slate-900/70 border-purple-200/80 dark:border-slate-800/90 hover:border-indigo-400 dark:hover:border-indigo-500/50 hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1'
+                    : 'bg-surface/85 border-line/80 hover:border-indigo-400 dark:hover:border-indigo-500/50 hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-3.5">
-                    <div className="p-2.5 rounded-xl bg-purple-50/90 dark:bg-slate-950 border border-purple-200/70 dark:border-slate-800 group-hover:border-indigo-300 dark:group-hover:border-indigo-500/30 smooth-theme">
+                    <div className="p-2.5 rounded-xl bg-sunken border border-line group-hover:border-indigo-300 dark:group-hover:border-indigo-500/30 smooth-theme">
                       {getCategoryIcon(tool.category)}
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -139,18 +139,18 @@ export const PopularToolsSection: React.FC<PopularToolsSectionProps> = ({
                           {tool.badge}
                         </span>
                       )}
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-purple-50 dark:bg-slate-950 border border-purple-200/80 dark:border-slate-800 text-[10px] font-mono font-extrabold text-slate-700 dark:text-slate-300 uppercase">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-sunken border border-line text-[10px] font-mono font-extrabold text-fg-soft uppercase">
                         <span>{tool.fromExt}</span>
                         <ArrowRight className="w-2.5 h-2.5 text-indigo-500" />
                         <span>{tool.toExt}</span>
                       </span>
                     </div>
                   </div>
-                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors flex items-center justify-between">
+                  <h3 className="text-base font-extrabold text-fg group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors flex items-center justify-between">
                     <span>{tool.title}</span>
-                    <ArrowRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-indigo-500 dark:text-indigo-400" />
+                    <ArrowRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-accent" />
                   </h3>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed font-medium">
+                  <p className="text-xs text-fg-muted mt-1.5 leading-relaxed font-medium">
                     {tool.subtitle}
                   </p>
                 </div>
@@ -163,10 +163,10 @@ export const PopularToolsSection: React.FC<PopularToolsSectionProps> = ({
       {/* How it works */}
       <section id="how-it-works" className="scroll-mt-24">
         <div className="text-center max-w-2xl mx-auto mb-10">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-fg">
             Cara Kerja MyConvert
           </h2>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mt-2 font-medium">
+          <p className="text-sm text-fg-muted mt-2 font-medium">
             Tiga langkah, tanpa daftar akun, tanpa upload ke server.
           </p>
         </div>
@@ -191,19 +191,19 @@ export const PopularToolsSection: React.FC<PopularToolsSectionProps> = ({
           ].map((step, i) => (
             <li
               key={step.title}
-              className="relative p-6 rounded-2xl smooth-theme bg-white/85 dark:bg-slate-900/75 border border-purple-200/80 dark:border-slate-800 shadow-sm"
+              className="relative p-6 rounded-2xl smooth-theme bg-surface/85 border border-line shadow-sm"
             >
               <span className="absolute top-5 right-5 text-4xl font-extrabold text-purple-100 dark:text-slate-800 select-none" aria-hidden="true">
                 {i + 1}
               </span>
-              <div className="w-11 h-11 rounded-xl bg-indigo-100 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-3">
+              <div className="w-11 h-11 rounded-xl bg-indigo-100 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center text-accent mb-3">
                 {step.icon}
               </div>
-              <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">
+              <h3 className="text-lg font-extrabold text-fg">
                 <span className="sr-only">Langkah {i + 1}: </span>
                 {step.title}
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium mt-1.5">
+              <p className="text-sm text-fg-muted leading-relaxed font-medium mt-1.5">
                 {step.desc}
               </p>
             </li>
@@ -214,51 +214,51 @@ export const PopularToolsSection: React.FC<PopularToolsSectionProps> = ({
       {/* 2. Why MyConvert (Unlimited Size + Hybrid Engine Explanation) */}
       <section id="features" className="scroll-mt-24">
         <div className="text-center max-w-2xl mx-auto mb-10">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-fg">
             Mengapa MyConvert Lebih Unggul?
           </h2>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mt-2 font-medium">
+          <p className="text-sm text-fg-muted mt-2 font-medium">
             Dirancang dengan arsitektur Modern WebAssembly & Client-Side Document Engine untuk melampaui batasan konverter konvensional.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 rounded-2xl smooth-theme bg-white/85 dark:bg-slate-900/75 border border-purple-200/80 dark:border-slate-800 shadow-sm space-y-3">
+          <div className="p-6 rounded-2xl smooth-theme bg-surface/85 border border-line shadow-sm space-y-3">
             <div className="w-11 h-11 rounded-xl bg-emerald-100 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
               <InfinityIcon className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">
+            <h3 className="text-lg font-extrabold text-fg">
               Tanpa Batasan Ukuran File
             </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+            <p className="text-xs text-fg-muted leading-relaxed font-medium">
               Situs lain membatasi file gratis maksimal 100 MB. Di MyConvert, konversi dilakukan menggunakan memori perangkat Anda sendiri sehingga Anda bebas mengonversi file besar tanpa kuota harian.
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl smooth-theme bg-white/85 dark:bg-slate-900/75 border border-purple-200/80 dark:border-slate-800 shadow-sm space-y-3">
-            <div className="w-11 h-11 rounded-xl bg-indigo-100 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+          <div className="p-6 rounded-2xl smooth-theme bg-surface/85 border border-line shadow-sm space-y-3">
+            <div className="w-11 h-11 rounded-xl bg-indigo-100 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 flex items-center justify-center text-accent">
               <ShieldCheck className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">
+            <h3 className="text-lg font-extrabold text-fg">
               Privasi 100% Zero-Upload
             </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+            <p className="text-xs text-fg-muted leading-relaxed font-medium">
               Dokumen kontrak, laporan keuangan Excel, maupun foto pribadi Anda{' '}
-              <strong className="text-slate-900 dark:text-slate-200">
+              <strong className="text-fg">
                 tidak pernah dikirim ke server pihak ketiga
               </strong>
               . Seluruh proses konversi terjadi lokal di dalam browser.
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl smooth-theme bg-white/85 dark:bg-slate-900/75 border border-purple-200/80 dark:border-slate-800 shadow-sm space-y-3">
+          <div className="p-6 rounded-2xl smooth-theme bg-surface/85 border border-line shadow-sm space-y-3">
             <div className="w-11 h-11 rounded-xl bg-amber-100 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
               <Zap className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">
+            <h3 className="text-lg font-extrabold text-fg">
               Instan Tanpa Antrean Upload
             </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+            <p className="text-xs text-fg-muted leading-relaxed font-medium">
               Tidak perlu menunggu waktu upload dan download file bergiga-byte. Begitu Anda memilih file, engine WebAssembly langsung memprosesnya dalam hitungan detik.
             </p>
           </div>
@@ -268,10 +268,10 @@ export const PopularToolsSection: React.FC<PopularToolsSectionProps> = ({
       {/* 3. Complete Supported Formats Directory (SEO Format Matrix) */}
       <section id="formats" className="scroll-mt-24">
         <div className="mb-7">
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
+          <h2 className="text-2xl font-extrabold text-fg">
             Direktori Lengkap Format yang Didukung
           </h2>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 font-medium">
+          <p className="text-sm text-fg-muted mt-1 font-medium">
             Mendukung lebih dari 35+ format lintas dokumen, gambar, tabel, presentasi, audio, video, dan data.
           </p>
         </div>
@@ -282,11 +282,11 @@ export const PopularToolsSection: React.FC<PopularToolsSectionProps> = ({
             return (
               <div
                 key={cat}
-                className="p-5 rounded-2xl smooth-theme bg-white/85 dark:bg-slate-900/60 border border-purple-200/80 dark:border-slate-800 shadow-sm flex flex-col justify-between"
+                className="p-5 rounded-2xl smooth-theme bg-surface/85 border border-line shadow-sm flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span className="text-sm font-extrabold text-fg flex items-center gap-2">
                       {getCategoryIcon(cat)}
                       <span>{CATEGORY_LABELS[cat].name}</span>
                     </span>
@@ -315,8 +315,8 @@ export const PopularToolsSection: React.FC<PopularToolsSectionProps> = ({
       {/* 4. SEO FAQ Section */}
       <section id="faq" className="scroll-mt-24">
         <div className="flex items-center gap-2.5 mb-6">
-          <HelpCircle className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-          <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
+          <HelpCircle className="w-6 h-6 text-accent" />
+          <h2 className="text-2xl font-extrabold text-fg">
             Pertanyaan yang Sering Diajukan (FAQ)
           </h2>
         </div>
@@ -343,13 +343,13 @@ export const PopularToolsSection: React.FC<PopularToolsSectionProps> = ({
             <details
               key={i}
               open={i === 0}
-              className="group rounded-2xl smooth-theme bg-white/85 dark:bg-slate-900/60 border border-purple-200/80 dark:border-slate-800 shadow-sm open:border-indigo-300 dark:open:border-indigo-500/40"
+              className="group rounded-2xl smooth-theme bg-surface/85 border border-line shadow-sm open:border-indigo-300 dark:open:border-indigo-500/40"
             >
               <summary className="flex items-center justify-between gap-4 cursor-pointer list-none p-5 [&::-webkit-details-marker]:hidden rounded-2xl focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/30">
-                <h3 className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white">{item.q}</h3>
+                <h3 className="text-sm sm:text-base font-extrabold text-fg">{item.q}</h3>
                 <ChevronDown className="w-5 h-5 shrink-0 text-slate-400 transition-transform duration-300 group-open:rotate-180" />
               </summary>
-              <p className="px-5 pb-5 -mt-1 text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+              <p className="px-5 pb-5 -mt-1 text-sm text-fg-muted leading-relaxed font-medium">
                 {item.a}
               </p>
             </details>

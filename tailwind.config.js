@@ -12,6 +12,20 @@ export default {
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       colors: {
+        // Semantic design tokens (values live in src/index.css)
+        canvas: 'rgb(var(--canvas) / <alpha-value>)',
+        surface: 'rgb(var(--surface) / <alpha-value>)',
+        sunken: 'rgb(var(--sunken) / <alpha-value>)',
+        line: {
+          DEFAULT: 'rgb(var(--line) / <alpha-value>)',
+          soft: 'rgb(var(--line-soft) / <alpha-value>)',
+        },
+        fg: {
+          DEFAULT: 'rgb(var(--fg) / <alpha-value>)',
+          soft: 'rgb(var(--fg-soft) / <alpha-value>)',
+          muted: 'rgb(var(--fg-muted) / <alpha-value>)',
+        },
+        accent: 'rgb(var(--accent) / <alpha-value>)',
         brand: {
           50: '#eef2ff',
           100: '#e0e7ff',
