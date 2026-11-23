@@ -14,13 +14,182 @@
   width: 8px;
   height: 8px;
 }
-::-webkit-scrollbar-track {
+html.dark ::-webkit-scrollbar-track {
   background: #090d16;
 }
-::-webkit-scrollbar-thumb {
+html.dark ::-webkit-scrollbar-thumb {
   background: #1e293b;
   border-radius: 9999px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+html:not(.dark) ::-webkit-scrollbar-track {
+  background: #faf5ff;
+}
+html:not(.dark) ::-webkit-scrollbar-thumb {
+  background: #d8b4fe;
+  border-radius: 9999px;
+}
+
+/* ============================================================================
+   PASTEL GEN-Z LIGHT MODE THEME OVERRIDES (Active when html does NOT have .dark)
+   Palette: Soft Cream/Lilac canvas, White/Blush glass cards, Candy Pastel pills,
+   and crisp Deep Indigo-Slate ink typography (#1E1B4B / #334155).
+   ============================================================================ */
+html:not(.dark) body {
+  background-color: #fdfbff !important;
+  color: #1e1b4b !important;
+}
+
+/* Main surfaces & glass cards */
+html:not(.dark) .bg-\[\#070B14\],
+html:not(.dark) .bg-\[\#070B14\]\/80 {
+  background-color: rgba(253, 251, 255, 0.85) !important;
+  color: #1e1b4b !important;
+}
+
+html:not(.dark) .bg-slate-900,
+html:not(.dark) .bg-slate-900\/90,
+html:not(.dark) .bg-slate-900\/80,
+html:not(.dark) .bg-slate-900\/75,
+html:not(.dark) .bg-slate-900\/70,
+html:not(.dark) .bg-slate-900\/60 {
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  box-shadow: 0 10px 30px -10px rgba(168, 85, 247, 0.09), 0 4px 12px -2px rgba(236, 72, 153, 0.05) !important;
+}
+
+html:not(.dark) .bg-slate-950,
+html:not(.dark) .bg-slate-950\/85,
+html:not(.dark) .bg-slate-950\/80,
+html:not(.dark) .bg-slate-950\/70,
+html:not(.dark) .bg-slate-950\/60,
+html:not(.dark) .bg-slate-950\/50 {
+  background-color: #faf5ff !important;
+}
+
+/* Modal backdrops keep soft frosted lavender dim */
+html:not(.dark) .fixed.bg-slate-950\/60,
+html:not(.dark) .fixed.bg-slate-950\/70,
+html:not(.dark) .fixed.bg-slate-950\/75 {
+  background-color: rgba(30, 27, 75, 0.35) !important;
+}
+
+html:not(.dark) .from-slate-900\/50 {
+  --tw-gradient-from: rgba(250, 245, 255, 0.7) var(--tw-gradient-from-position) !important;
+}
+html:not(.dark) .to-slate-950\/50 {
+  --tw-gradient-to: rgba(253, 242, 248, 0.7) var(--tw-gradient-to-position) !important;
+}
+
+html:not(.dark) .bg-slate-800 {
+  background-color: #f3e8ff !important;
+}
+html:not(.dark) .hover\:bg-slate-800:hover,
+html:not(.dark) .hover\:bg-slate-800\/70:hover,
+html:not(.dark) .hover\:bg-slate-900:hover {
+  background-color: #f5d0fe !important;
+}
+
+/* Pastel borders */
+html:not(.dark) .border-slate-800,
+html:not(.dark) .border-slate-800\/90,
+html:not(.dark) .border-slate-800\/80,
+html:not(.dark) .border-slate-700,
+html:not(.dark) .border-slate-700\/80 {
+  border-color: #e9d5ff !important;
+}
+
+html:not(.dark) .hover\:border-indigo-500\/50:hover,
+html:not(.dark) .hover\:border-slate-700:hover,
+html:not(.dark) .hover\:border-slate-700\/80:hover {
+  border-color: #c084fc !important;
+}
+
+/* Typography in Pastel Light Mode: convert white/light slate text on cards to deep indigo ink,
+   while preserving white text inside solid primary buttons */
+html:not(.dark) .text-white:not(.bg-indigo-600):not(.bg-emerald-600):not(.from-indigo-600),
+html:not(.dark) .text-slate-100 {
+  color: #1e1b4b !important;
+}
+
+html:not(.dark) .bg-indigo-600,
+html:not(.dark) .bg-indigo-600 span,
+html:not(.dark) .bg-emerald-600,
+html:not(.dark) .bg-emerald-600 span,
+html:not(.dark) .from-indigo-600,
+html:not(.dark) .from-indigo-600 span {
+  color: #ffffff !important;
+}
+
+html:not(.dark) .text-slate-200,
+html:not(.dark) .text-slate-300 {
+  color: #334155 !important;
+}
+
+html:not(.dark) .text-slate-400,
+html:not(.dark) .text-slate-500 {
+  color: #64748b !important;
+}
+
+/* Pastel candy accent texts */
+html:not(.dark) .text-indigo-300,
+html:not(.dark) .text-indigo-400 {
+  color: #6366f1 !important;
+}
+html:not(.dark) .text-emerald-300,
+html:not(.dark) .text-emerald-400 {
+  color: #059669 !important;
+}
+html:not(.dark) .text-rose-300,
+html:not(.dark) .text-rose-400 {
+  color: #e11d48 !important;
+}
+html:not(.dark) .text-amber-400 {
+  color: #d97706 !important;
+}
+html:not(.dark) .text-sky-300,
+html:not(.dark) .text-sky-400 {
+  color: #0284c7 !important;
+}
+html:not(.dark) .text-teal-300 {
+  color: #0d9488 !important;
+}
+html:not(.dark) .text-blue-300 {
+  color: #2563eb !important;
+}
+html:not(.dark) .text-purple-300,
+html:not(.dark) .text-purple-400 {
+  color: #7c3aed !important;
+}
+
+/* Soft pastel pill backgrounds for sample buttons & badges */
+html:not(.dark) .bg-rose-500\/10 {
+  background-color: #ffe4e6 !important;
+  border-color: #fecdd3 !important;
+}
+html:not(.dark) .bg-emerald-500\/10,
+html:not(.dark) .bg-emerald-500\/15 {
+  background-color: #d1fae5 !important;
+  border-color: #a7f3d0 !important;
+}
+html:not(.dark) .bg-blue-500\/10 {
+  background-color: #dbeafe !important;
+  border-color: #bfdbfe !important;
+}
+html:not(.dark) .bg-teal-500\/10 {
+  background-color: #ccfbf1 !important;
+  border-color: #99f6e4 !important;
+}
+html:not(.dark) .bg-sky-500\/10 {
+  background-color: #e0f2fe !important;
+  border-color: #bae6fd !important;
+}
+html:not(.dark) .bg-purple-500\/10 {
+  background-color: #f3e8ff !important;
+  border-color: #e9d5ff !important;
+}
+html:not(.dark) .bg-indigo-500\/10,
+html:not(.dark) .bg-indigo-500\/20,
+html:not(.dark) .bg-indigo-600\/15,
+html:not(.dark) .bg-indigo-600\/20 {
+  background-color: #ede9fe !important;
+  border-color: #c4b5fd !important;
 }

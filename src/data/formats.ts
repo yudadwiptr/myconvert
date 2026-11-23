@@ -19,14 +19,14 @@ export const DEFAULT_SETTINGS: ConversionSettings = {
 };
 
 export const CATEGORY_LABELS: Record<FormatCategory, { name: string; color: string }> = {
-  document: { name: 'Dokumen & PDF', color: 'text-rose-400 bg-rose-500/10 border-rose-500/20' },
-  spreadsheet: { name: 'Excel & Tabel', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
-  presentation: { name: 'Presentasi PPT', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
-  image: { name: 'Gambar & Foto', color: 'text-sky-400 bg-sky-500/10 border-sky-500/20' },
-  audio: { name: 'Audio & Musik', color: 'text-purple-400 bg-purple-500/10 border-purple-500/20' },
-  video: { name: 'Video & Animasi', color: 'text-pink-400 bg-pink-500/10 border-pink-500/20' },
-  data: { name: 'Data & Kode', color: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20' },
-  archive: { name: 'Arsip ZIP', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' },
+  document: { name: 'Dokumen & PDF', color: 'text-rose-700 dark:text-rose-300 bg-rose-100 dark:bg-rose-500/10 border-rose-300 dark:border-rose-500/20' },
+  spreadsheet: { name: 'Excel & Tabel', color: 'text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-500/10 border-emerald-300 dark:border-emerald-500/20' },
+  presentation: { name: 'Presentasi PPT', color: 'text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-500/10 border-amber-300 dark:border-amber-500/20' },
+  image: { name: 'Gambar & Foto', color: 'text-sky-700 dark:text-sky-300 bg-sky-100 dark:bg-sky-500/10 border-sky-300 dark:border-sky-500/20' },
+  audio: { name: 'Audio & Musik', color: 'text-purple-700 dark:text-purple-300 bg-purple-100 dark:bg-purple-500/10 border-purple-300 dark:border-purple-500/20' },
+  video: { name: 'Video & Animasi', color: 'text-pink-700 dark:text-pink-300 bg-pink-100 dark:bg-pink-500/10 border-pink-300 dark:border-pink-500/20' },
+  data: { name: 'Data & Kode', color: 'text-cyan-700 dark:text-cyan-300 bg-cyan-100 dark:bg-cyan-500/10 border-cyan-300 dark:border-cyan-500/20' },
+  archive: { name: 'Arsip ZIP', color: 'text-yellow-800 dark:text-yellow-300 bg-yellow-100 dark:bg-yellow-500/10 border-yellow-300 dark:border-yellow-500/20' },
 };
 
 export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
@@ -37,7 +37,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'application/pdf',
     category: 'document',
     description: 'Portable Document Format',
-    badgeColor: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
+    badgeColor: 'bg-rose-100 text-rose-700 border-rose-300 dark:bg-rose-500/20 dark:text-rose-300 dark:border-rose-500/30',
   },
   docx: {
     ext: 'docx',
@@ -45,7 +45,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     category: 'document',
     description: 'Microsoft Word Document',
-    badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+    badgeColor: 'bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-500/30',
   },
   doc: {
     ext: 'doc',
@@ -53,7 +53,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'application/msword',
     category: 'document',
     description: 'Microsoft Word Legacy',
-    badgeColor: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+    badgeColor: 'bg-blue-100 text-blue-700 border-blue-300 dark:bg-blue-500/20 dark:text-blue-300 dark:border-blue-500/30',
   },
   txt: {
     ext: 'txt',
@@ -61,7 +61,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'text/plain',
     category: 'document',
     description: 'Plain Text Document',
-    badgeColor: 'bg-slate-500/20 text-slate-300 border-slate-500/30',
+    badgeColor: 'bg-slate-200 text-slate-700 border-slate-300 dark:bg-slate-500/20 dark:text-slate-300 dark:border-slate-500/30',
   },
   rtf: {
     ext: 'rtf',
@@ -69,7 +69,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'application/rtf',
     category: 'document',
     description: 'Rich Text Format',
-    badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+    badgeColor: 'bg-indigo-100 text-indigo-700 border-indigo-300 dark:bg-indigo-500/20 dark:text-indigo-300 dark:border-indigo-500/30',
   },
   md: {
     ext: 'md',
@@ -77,7 +77,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'text/markdown',
     category: 'document',
     description: 'Markdown Document',
-    badgeColor: 'bg-violet-500/20 text-violet-300 border-violet-500/30',
+    badgeColor: 'bg-violet-100 text-violet-700 border-violet-300 dark:bg-violet-500/20 dark:text-violet-300 dark:border-violet-500/30',
   },
   html: {
     ext: 'html',
@@ -85,7 +85,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'text/html',
     category: 'document',
     description: 'HyperText Markup Language',
-    badgeColor: 'bg-orange-500/20 text-orange-300 border-orange-500/30',
+    badgeColor: 'bg-orange-100 text-orange-700 border-orange-300 dark:bg-orange-500/20 dark:text-orange-300 dark:border-orange-500/30',
   },
 
   // Spreadsheets
@@ -95,7 +95,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     category: 'spreadsheet',
     description: 'Microsoft Excel Workbook',
-    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    badgeColor: 'bg-emerald-100 text-emerald-700 border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30',
   },
   xls: {
     ext: 'xls',
@@ -103,7 +103,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'application/vnd.ms-excel',
     category: 'spreadsheet',
     description: 'Microsoft Excel Legacy',
-    badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
+    badgeColor: 'bg-emerald-100 text-emerald-700 border-emerald-300 dark:bg-emerald-500/20 dark:text-emerald-300 dark:border-emerald-500/30',
   },
   csv: {
     ext: 'csv',
@@ -111,7 +111,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'text/csv',
     category: 'spreadsheet',
     description: 'Comma-Separated Values',
-    badgeColor: 'bg-teal-500/20 text-teal-300 border-teal-500/30',
+    badgeColor: 'bg-teal-100 text-teal-700 border-teal-300 dark:bg-teal-500/20 dark:text-teal-300 dark:border-teal-500/30',
   },
   ods: {
     ext: 'ods',
@@ -119,7 +119,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'application/vnd.oasis.opendocument.spreadsheet',
     category: 'spreadsheet',
     description: 'OpenDocument Spreadsheet',
-    badgeColor: 'bg-green-500/20 text-green-300 border-green-500/30',
+    badgeColor: 'bg-green-100 text-green-700 border-green-300 dark:bg-green-500/20 dark:text-green-300 dark:border-green-500/30',
   },
 
   // Presentations
@@ -129,7 +129,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
     category: 'presentation',
     description: 'Microsoft PowerPoint Presentation',
-    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    badgeColor: 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30',
   },
   ppt: {
     ext: 'ppt',
@@ -137,7 +137,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'application/vnd.ms-powerpoint',
     category: 'presentation',
     description: 'Microsoft PowerPoint Legacy',
-    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    badgeColor: 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30',
   },
 
   // Images
@@ -147,7 +147,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'image/png',
     category: 'image',
     description: 'Portable Network Graphics (Transparan)',
-    badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+    badgeColor: 'bg-sky-100 text-sky-700 border-sky-300 dark:bg-sky-500/20 dark:text-sky-300 dark:border-sky-500/30',
   },
   jpg: {
     ext: 'jpg',
@@ -155,7 +155,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'image/jpeg',
     category: 'image',
     description: 'Joint Photographic Experts Group',
-    badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+    badgeColor: 'bg-sky-100 text-sky-700 border-sky-300 dark:bg-sky-500/20 dark:text-sky-300 dark:border-sky-500/30',
   },
   jpeg: {
     ext: 'jpeg',
@@ -163,7 +163,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'image/jpeg',
     category: 'image',
     description: 'Joint Photographic Experts Group',
-    badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+    badgeColor: 'bg-sky-100 text-sky-700 border-sky-300 dark:bg-sky-500/20 dark:text-sky-300 dark:border-sky-500/30',
   },
   webp: {
     ext: 'webp',
@@ -171,7 +171,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'image/webp',
     category: 'image',
     description: 'Modern Web Picture Format',
-    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    badgeColor: 'bg-cyan-100 text-cyan-800 border-cyan-300 dark:bg-cyan-500/20 dark:text-cyan-300 dark:border-cyan-500/30',
   },
   avif: {
     ext: 'avif',
@@ -179,7 +179,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'image/avif',
     category: 'image',
     description: 'AV1 Image File Format',
-    badgeColor: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
+    badgeColor: 'bg-indigo-100 text-indigo-700 border-indigo-300 dark:bg-indigo-500/20 dark:text-indigo-300 dark:border-indigo-500/30',
   },
   svg: {
     ext: 'svg',
@@ -187,7 +187,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'image/svg+xml',
     category: 'image',
     description: 'Scalable Vector Graphics',
-    badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+    badgeColor: 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/30',
   },
   ico: {
     ext: 'ico',
@@ -195,7 +195,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'image/x-icon',
     category: 'image',
     description: 'Windows & Website Favicon Icon',
-    badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    badgeColor: 'bg-purple-100 text-purple-700 border-purple-300 dark:bg-purple-500/20 dark:text-purple-300 dark:border-purple-500/30',
   },
   bmp: {
     ext: 'bmp',
@@ -203,7 +203,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'image/bmp',
     category: 'image',
     description: 'Uncompressed Windows Bitmap',
-    badgeColor: 'bg-slate-500/20 text-slate-300 border-slate-500/30',
+    badgeColor: 'bg-slate-200 text-slate-700 border-slate-300 dark:bg-slate-500/20 dark:text-slate-300 dark:border-slate-500/30',
   },
   gif: {
     ext: 'gif',
@@ -211,7 +211,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'image/gif',
     category: 'image',
     description: 'Graphics Interchange Format',
-    badgeColor: 'bg-pink-500/20 text-pink-300 border-pink-500/30',
+    badgeColor: 'bg-pink-100 text-pink-700 border-pink-300 dark:bg-pink-500/20 dark:text-pink-300 dark:border-pink-500/30',
   },
   heic: {
     ext: 'heic',
@@ -219,7 +219,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'image/heic',
     category: 'image',
     description: 'Apple High Efficiency Image',
-    badgeColor: 'bg-fuchsia-500/20 text-fuchsia-300 border-fuchsia-500/30',
+    badgeColor: 'bg-fuchsia-100 text-fuchsia-700 border-fuchsia-300 dark:bg-fuchsia-500/20 dark:text-fuchsia-300 dark:border-fuchsia-500/30',
   },
   heif: {
     ext: 'heif',
@@ -227,7 +227,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'image/heif',
     category: 'image',
     description: 'High Efficiency Image Format',
-    badgeColor: 'bg-fuchsia-500/20 text-fuchsia-300 border-fuchsia-500/30',
+    badgeColor: 'bg-fuchsia-100 text-fuchsia-700 border-fuchsia-300 dark:bg-fuchsia-500/20 dark:text-fuchsia-300 dark:border-fuchsia-500/30',
   },
   tiff: {
     ext: 'tiff',
@@ -235,7 +235,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'image/tiff',
     category: 'image',
     description: 'Tagged Image File Format',
-    badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/30',
+    badgeColor: 'bg-sky-100 text-sky-700 border-sky-300 dark:bg-sky-500/20 dark:text-sky-300 dark:border-sky-500/30',
   },
 
   // Audio
@@ -245,7 +245,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'audio/mpeg',
     category: 'audio',
     description: 'MPEG Layer-3 Audio',
-    badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    badgeColor: 'bg-purple-100 text-purple-700 border-purple-300 dark:bg-purple-500/20 dark:text-purple-300 dark:border-purple-500/30',
   },
   wav: {
     ext: 'wav',
@@ -253,7 +253,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'audio/wav',
     category: 'audio',
     description: 'Lossless Waveform Audio',
-    badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    badgeColor: 'bg-purple-100 text-purple-700 border-purple-300 dark:bg-purple-500/20 dark:text-purple-300 dark:border-purple-500/30',
   },
   ogg: {
     ext: 'ogg',
@@ -261,7 +261,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'audio/ogg',
     category: 'audio',
     description: 'Ogg Vorbis / Opus Audio',
-    badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    badgeColor: 'bg-purple-100 text-purple-700 border-purple-300 dark:bg-purple-500/20 dark:text-purple-300 dark:border-purple-500/30',
   },
   aac: {
     ext: 'aac',
@@ -269,7 +269,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'audio/aac',
     category: 'audio',
     description: 'Advanced Audio Coding',
-    badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    badgeColor: 'bg-purple-100 text-purple-700 border-purple-300 dark:bg-purple-500/20 dark:text-purple-300 dark:border-purple-500/30',
   },
   flac: {
     ext: 'flac',
@@ -277,7 +277,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'audio/flac',
     category: 'audio',
     description: 'Free Lossless Audio Codec',
-    badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    badgeColor: 'bg-purple-100 text-purple-700 border-purple-300 dark:bg-purple-500/20 dark:text-purple-300 dark:border-purple-500/30',
   },
   m4a: {
     ext: 'm4a',
@@ -285,7 +285,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'audio/mp4',
     category: 'audio',
     description: 'MPEG-4 Audio',
-    badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+    badgeColor: 'bg-purple-100 text-purple-700 border-purple-300 dark:bg-purple-500/20 dark:text-purple-300 dark:border-purple-500/30',
   },
 
   // Video
@@ -295,7 +295,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'video/mp4',
     category: 'video',
     description: 'MPEG-4 Video Container',
-    badgeColor: 'bg-pink-500/20 text-pink-300 border-pink-500/30',
+    badgeColor: 'bg-pink-100 text-pink-700 border-pink-300 dark:bg-pink-500/20 dark:text-pink-300 dark:border-pink-500/30',
   },
   webm: {
     ext: 'webm',
@@ -303,7 +303,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'video/webm',
     category: 'video',
     description: 'WebM Open Video Format',
-    badgeColor: 'bg-pink-500/20 text-pink-300 border-pink-500/30',
+    badgeColor: 'bg-pink-100 text-pink-700 border-pink-300 dark:bg-pink-500/20 dark:text-pink-300 dark:border-pink-500/30',
   },
   mov: {
     ext: 'mov',
@@ -311,7 +311,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'video/quicktime',
     category: 'video',
     description: 'Apple QuickTime Movie',
-    badgeColor: 'bg-pink-500/20 text-pink-300 border-pink-500/30',
+    badgeColor: 'bg-pink-100 text-pink-700 border-pink-300 dark:bg-pink-500/20 dark:text-pink-300 dark:border-pink-500/30',
   },
   mkv: {
     ext: 'mkv',
@@ -319,7 +319,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'video/x-matroska',
     category: 'video',
     description: 'Matroska Multimedia Container',
-    badgeColor: 'bg-pink-500/20 text-pink-300 border-pink-500/30',
+    badgeColor: 'bg-pink-100 text-pink-700 border-pink-300 dark:bg-pink-500/20 dark:text-pink-300 dark:border-pink-500/30',
   },
   avi: {
     ext: 'avi',
@@ -327,7 +327,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'video/x-msvideo',
     category: 'video',
     description: 'Audio Video Interleave',
-    badgeColor: 'bg-pink-500/20 text-pink-300 border-pink-500/30',
+    badgeColor: 'bg-pink-100 text-pink-700 border-pink-300 dark:bg-pink-500/20 dark:text-pink-300 dark:border-pink-500/30',
   },
 
   // Data
@@ -337,7 +337,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'application/json',
     category: 'data',
     description: 'JavaScript Object Notation',
-    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    badgeColor: 'bg-cyan-100 text-cyan-800 border-cyan-300 dark:bg-cyan-500/20 dark:text-cyan-300 dark:border-cyan-500/30',
   },
   xml: {
     ext: 'xml',
@@ -345,7 +345,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'application/xml',
     category: 'data',
     description: 'Extensible Markup Language',
-    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    badgeColor: 'bg-cyan-100 text-cyan-800 border-cyan-300 dark:bg-cyan-500/20 dark:text-cyan-300 dark:border-cyan-500/30',
   },
   yaml: {
     ext: 'yaml',
@@ -353,7 +353,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'text/yaml',
     category: 'data',
     description: 'YAML Data Serialization',
-    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    badgeColor: 'bg-cyan-100 text-cyan-800 border-cyan-300 dark:bg-cyan-500/20 dark:text-cyan-300 dark:border-cyan-500/30',
   },
   sql: {
     ext: 'sql',
@@ -361,7 +361,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'application/sql',
     category: 'data',
     description: 'SQL Database Script',
-    badgeColor: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+    badgeColor: 'bg-cyan-100 text-cyan-800 border-cyan-300 dark:bg-cyan-500/20 dark:text-cyan-300 dark:border-cyan-500/30',
   },
 
   // Archive
@@ -371,7 +371,7 @@ export const FORMAT_REGISTRY: Record<string, FormatInfo> = {
     mime: 'application/zip',
     category: 'archive',
     description: 'Compressed ZIP Archive',
-    badgeColor: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
+    badgeColor: 'bg-yellow-100 text-yellow-800 border-yellow-300 dark:bg-yellow-500/20 dark:text-yellow-300 dark:border-yellow-500/30',
   },
 };
 

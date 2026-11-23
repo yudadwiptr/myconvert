@@ -23,6 +23,8 @@ import {
   Table,
   Music,
   X,
+  Sun,
+  Moon,
 } from 'lucide-react';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
@@ -57,9 +59,23 @@ import { PdfSuitePanel } from './components/PdfSuitePanel';
 import { PopularToolsSection } from './components/PopularToolsSection';
 
 export function App() {
+  const [theme, setTheme] = useState<'pastel' | 'dark'>(() => {
+    const saved = localStorage.getItem('myconvert_theme');
+    return saved === 'dark' ? 'dark' : 'pastel';
+  });
   const [activeTab, setActiveTab] = useState<'converter' | 'pdf-suite'>('converter');
   const [pdfSuiteMode, setPdfSuiteMode] = useState<PdfSuiteMode>('merge');
   const [activePreset, setActivePreset] = useState<PopularToolPreset | null>(null);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('myconvert_theme', theme);
+  }, [theme]);
 
   const [jobs, setJobs] = useState<ConversionJob[]>([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -311,17 +327,28 @@ export function App() {
   const completedCount = jobs.filter((j) => j.status === 'done').length;
 
   return (
-    <div className="min-h-screen bg-[#070B14] text-slate-100 flex flex-col relative overflow-x-hidden">
-      {/* Ambient Background Glows */}
+    <div className="min-h-screen bg-[#070B14] text-slate-100 flex flex-col relative overflow-x-hidden transition-colors duration-300">
+      {/* Ambient Background Glows (Pastel Gen-Z Mesh in Light Mode, Cyber Glow in Dark Mode) */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden -z-10">
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-indigo-600/15 blur-[140px] rounded-full" />
-        <div className="absolute top-96 -left-32 w-[450px] h-[450px] bg-cyan-500/10 blur-[140px] rounded-full" />
-        <div className="absolute top-80 -right-32 w-[450px] h-[450px] bg-violet-600/10 blur-[140px] rounded-full" />
+        {theme === 'pastel' ? (
+          <>
+            <div className="absolute -top-32 left-1/4 w-[650px] h-[420px] bg-purple-300/45 blur-[120px] rounded-full" />
+            <div className="absolute top-12 right-10 w-[520px] h-[420px] bg-pink-300/40 blur-[120px] rounded-full" />
+            <div className="absolute top-[420px] -left-20 w-[500px] h-[450px] bg-teal-200/45 blur-[120px] rounded-full" />
+            <div className="absolute bottom-10 right-1/4 w-[550px] h-[420px] bg-amber-200/40 blur-[130px] rounded-full" />
+          </>
+        ) : (
+          <>
+            <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-indigo-600/15 blur-[140px] rounded-full" />
+            <div className="absolute top-96 -left-32 w-[450px] h-[450px] bg-cyan-500/10 blur-[140px] rounded-full" />
+            <div className="absolute top-80 -right-32 w-[450px] h-[450px] bg-violet-600/10 blur-[140px] rounded-full" />
+          </>
+        )}
       </div>
 
       {/* Sticky Top Navbar */}
       <header className="sticky top-0 z-40 border-b border-slate-800/80 bg-[#070B14]/80 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
           {/* Brand Logo */}
           <a
             href="#"
@@ -338,7 +365,7 @@ export function App() {
               className="w-9 h-9 rounded-xl shadow-md shadow-indigo-500/20 group-hover:scale-105 transition"
             />
             <div className="flex items-center gap-2">
-              <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-white via-indigo-200 to-cyan-300 bg-clip-text text-transparent">
+              <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-600 via-fuchsia-500 to-cyan-500 dark:from-white dark:via-indigo-200 dark:to-cyan-300 bg-clip-text text-transparent">
                 MyConvert
               </span>
               <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
@@ -376,21 +403,46 @@ export function App() {
             </button>
           </div>
 
-          {/* Right Quick Nav */}
-          <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-300">
-            <a href="#popular-tools" className="hover:text-indigo-400 transition">
-              Alat Populer
-            </a>
-            <a href="#features" className="hover:text-indigo-400 transition">
-              Keunggulan
-            </a>
-            <a href="#formats" className="hover:text-indigo-400 transition">
-              35+ Format
-            </a>
-            <a href="#faq" className="hover:text-indigo-400 transition">
-              FAQ
-            </a>
-          </nav>
+          {/* Right Quick Nav + Pastel/Dark Theme Switcher */}
+          <div className="flex items-center gap-4">
+            <nav className="hidden lg:flex items-center gap-5 text-xs font-semibold text-slate-300">
+              <a href="#popular-tools" className="hover:text-indigo-400 transition">
+                Alat Populer
+              </a>
+              <a href="#features" className="hover:text-indigo-400 transition">
+                Keunggulan
+              </a>
+              <a href="#formats" className="hover:text-indigo-400 transition">
+                35+ Format
+              </a>
+              <a href="#faq" className="hover:text-indigo-400 transition">
+                FAQ
+              </a>
+            </nav>
+
+            <button
+              type="button"
+              onClick={() => setTheme((prev) => (prev === 'pastel' ? 'dark' : 'pastel'))}
+              title="Ganti Tema Pastel Light / Cyber Dark"
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition shadow-sm ${
+                theme === 'pastel'
+                  ? 'bg-gradient-to-r from-pink-100 via-purple-100 to-teal-100 text-purple-900 border-purple-300 hover:brightness-95'
+                  : 'bg-slate-900 text-amber-300 border-slate-700 hover:bg-slate-800'
+              }`}
+            >
+              {theme === 'pastel' ? (
+                <>
+                  <Sun className="w-3.5 h-3.5 text-pink-500" />
+                  <span>Pastel Mode</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Dark Mode</span>
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -416,14 +468,14 @@ export function App() {
             {activePreset ? (
               <>
                 Konversi <span className="text-indigo-400">{activePreset.title}</span>{' '}
-                <span className="bg-gradient-to-r from-cyan-300 to-indigo-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-fuchsia-500 via-indigo-500 to-teal-500 dark:from-cyan-300 dark:to-indigo-400 bg-clip-text text-transparent">
                   Tanpa Batas Ukuran
                 </span>
               </>
             ) : (
               <>
                 Konversi Semua Format File{' '}
-                <span className="bg-gradient-to-r from-indigo-400 via-purple-300 to-cyan-300 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-indigo-600 via-fuchsia-500 to-teal-500 dark:from-indigo-400 dark:via-purple-300 dark:to-cyan-300 bg-clip-text text-transparent">
                   Tanpa Batasan Size
                 </span>
               </>
