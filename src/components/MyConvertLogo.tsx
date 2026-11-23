@@ -40,10 +40,12 @@ export const MyConvertLogo: React.FC<MyConvertLogoProps> = ({
         aria-label="MYConvert - Digital Converter Platform"
       >
         <defs>
-          <linearGradient id={gradId} x1="176" y1="52" x2="592" y2="52" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#9EF253" />
-            <stop offset="32%" stopColor="#5BE59B" />
-            <stop offset="68%" stopColor="#27C6EA" />
+          <linearGradient id={gradId} x1="195" y1="52" x2="592" y2="52" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#A3F459" />
+            <stop offset="22%" stopColor="#7BEE7D" />
+            <stop offset="45%" stopColor="#52E3A8" />
+            <stop offset="68%" stopColor="#32D1D8" />
+            <stop offset="85%" stopColor="#20B2EC" />
             <stop offset="100%" stopColor="#1494F2" />
           </linearGradient>
         </defs>
@@ -64,8 +66,8 @@ export const MyConvertLogo: React.FC<MyConvertLogoProps> = ({
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-        {/* Arrowhead on top-right of C */}
-        <path d="M 221 10 L 250 28 L 216 39 Z" fill="#8BEF65" />
+        {/* Arrowhead on top-right of C using the exact same continuous gradient */}
+        <path d="M 221 10 L 250 28 L 216 39 Z" fill={`url(#${gradId})`} />
 
         {/* "nvert" in the same continuous Lime -> Aqua -> Cyan -> Blue gradient */}
         <g fill={`url(#${gradId})`}>

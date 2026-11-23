@@ -106,6 +106,61 @@ export function App() {
     localStorage.setItem('myconvert_theme', theme);
   }, [theme]);
 
+  const handleToggleTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const nextTheme = theme === 'pastel' ? 'dark' : 'pastel';
+    const root = document.documentElement;
+
+    // Add synchronized CSS transition class
+    root.classList.add('theme-transitioning');
+    window.setTimeout(() => {
+      root.classList.remove('theme-transitioning');
+    }, 520);
+
+    // Use native GPU View Transitions API with smooth circular reveal from click position if supported
+    const docWithVT = document as Document & {
+      startViewTransition?: (cb: () => void) => { ready: Promise<void> };
+    };
+
+    if (docWithVT.startViewTransition && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      const endRadius = Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+      );
+
+      const transition = docWithVT.startViewTransition(() => {
+        if (nextTheme === 'dark') {
+          root.classList.add('dark');
+        } else {
+          root.classList.remove('dark');
+        }
+        setTheme(nextTheme);
+      });
+
+      transition.ready
+        .then(() => {
+          document.documentElement.animate(
+            {
+              clipPath: [
+                `circle(0px at ${x}px ${y}px)`,
+                `circle(${endRadius}px at ${x}px ${y}px)`,
+              ],
+            },
+            {
+              duration: 520,
+              easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+              pseudoElement: '::view-transition-new(root)',
+            }
+          );
+        })
+        .catch(() => {});
+    } else {
+      setTheme(nextTheme);
+    }
+  };
+
   const [jobs, setJobs] = useState<ConversionJob[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [pickerJobId, setPickerJobId] = useState<string | null>(null);
@@ -449,21 +504,37 @@ export function App() {
 
             <button
               type="button"
-              onClick={() => setTheme((prev) => (prev === 'pastel' ? 'dark' : 'pastel'))}
+              onClick={handleToggleTheme}
               title="Ganti Tema Pastel Light / Cyber Dark"
-              className="group relative inline-flex items-center gap-2 px-3.5 py-1.5 rounded-2xl text-xs font-extrabold border smooth-theme bg-gradient-to-r from-pink-100/90 via-purple-100/90 to-teal-100/90 text-purple-900 border-purple-300/90 hover:shadow-md hover:shadow-purple-500/10 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 dark:text-amber-300 dark:border-slate-700"
+              aria-label="Toggle Theme"
+              className="group relative inline-flex items-center gap-2.5 p-1 pr-3.5 rounded-full text-xs font-extrabold border smooth-theme bg-purple-100/80 hover:bg-purple-100 border-purple-200/90 text-purple-950 shadow-sm dark:bg-slate-900 dark:hover:bg-slate-800/90 dark:border-slate-700/90 dark:text-slate-200"
             >
-              {theme === 'pastel' ? (
-                <>
-                  <Sun className="w-3.5 h-3.5 text-pink-500 transition-transform duration-500 group-hover:rotate-90" />
-                  <span>Pastel Mode</span>
-                </>
-              ) : (
-                <>
-                  <Moon className="w-3.5 h-3.5 text-amber-300 transition-transform duration-500 group-hover:-rotate-12" />
-                  <span>Dark Mode</span>
-                </>
-              )}
+              {/* Animated Icon Badge */}
+              <span
+                className={`relative w-7 h-7 rounded-full flex items-center justify-center transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] shadow-sm ${
+                  theme === 'pastel'
+                    ? 'bg-white text-amber-500 rotate-0 scale-100'
+                    : 'bg-indigo-600 text-white rotate-180 scale-100'
+                }`}
+              >
+                <Sun
+                  className={`w-4 h-4 absolute transition-all duration-500 ${
+                    theme === 'pastel'
+                      ? 'opacity-100 rotate-0 scale-100'
+                      : 'opacity-0 -rotate-90 scale-50'
+                  }`}
+                />
+                <Moon
+                  className={`w-3.5 h-3.5 absolute transition-all duration-500 ${
+                    theme === 'dark'
+                      ? 'opacity-100 -rotate-180 scale-100'
+                      : 'opacity-0 rotate-90 scale-50'
+                  }`}
+                />
+              </span>
+              <span className="tracking-tight transition-colors duration-300">
+                {theme === 'pastel' ? 'Pastel Mode' : 'Dark Mode'}
+              </span>
             </button>
           </div>
         </div>
@@ -562,7 +633,7 @@ export function App() {
                 className={`smooth-theme p-6 sm:p-10 text-center border-b border-purple-100 dark:border-slate-800/80 ${
                   isDragging
                     ? 'bg-indigo-500/10 border-indigo-500'
-                    : 'bg-gradient-to-b from-purple-50/40 via-pink-50/25 to-sky-50/35 dark:from-slate-900/50 dark:to-slate-950/50'
+                    : 'bg-purple-50/35 dark:bg-slate-900/40'
                 }`}
               >
                 <div
