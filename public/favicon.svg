@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="50%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="arrow1" x1="24" y1="36" x2="104" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#E0E7FF"/>
+    </linearGradient>
+    <linearGradient id="arrow2" x1="104" y1="92" x2="24" y2="72" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#FFFFFF"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="30" fill="url(#bg)"/>
+  <rect x="4" y="4" width="120" height="120" rx="26" stroke="white" stroke-opacity="0.18" stroke-width="2"/>
+  <!-- Top conversion wave arrow -->
+  <path d="M30 50C30 37.8497 39.8497 28 52 28H88L76 16M88 28L76 40" stroke="url(#arrow1)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Bottom conversion wave arrow -->
+  <path d="M98 78C98 90.1503 88.1503 100 76 100H40L52 112M40 100L52 88" stroke="url(#arrow2)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Center lightning spark -->
+  <path d="M67 47L53 66H65L61 81L75 62H63L67 47Z" fill="#FACC15"/>
+</svg>

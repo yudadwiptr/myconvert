@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
+  <defs>
+    <linearGradient id="ogBg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#090D16"/>
+      <stop offset="50%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="brandGrad" x1="0" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6366F1"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#ogBg)"/>
+  <circle cx="1050" cy="120" r="260" fill="#4F46E5" fill-opacity="0.18"/>
+  <circle cx="150" cy="530" r="240" fill="#06B6D4" fill-opacity="0.15"/>
+  <rect x="80" y="80" width="1040" height="470" rx="32" fill="#111827" fill-opacity="0.75" stroke="#374151" stroke-width="2"/>
+  <rect x="130" y="135" width="84" height="84" rx="20" fill="url(#brandGrad)"/>
+  <text x="236" y="192" fill="#FFFFFF" font-family="Inter, sans-serif" font-weight="800" font-size="48">MyConvert</text>
+  <rect x="520" y="152" width="230" height="44" rx="22" fill="#065F46"/>
+  <text x="546" y="180" fill="#34D399" font-family="Inter, sans-serif" font-weight="700" font-size="20">UNLIMITED FILE SIZE</text>
+  <text x="130" y="295" fill="#FFFFFF" font-family="Inter, sans-serif" font-weight="800" font-size="56">Konversi Semua Format File</text>
+  <text x="130" y="365" fill="#38BDF8" font-family="Inter, sans-serif" font-weight="800" font-size="52">Tanpa Batas Ukuran &amp; 100% Gratis</text>
+  <text x="130" y="435" fill="#9CA3AF" font-family="Inter, sans-serif" font-weight="500" font-size="26">PDF ke Word, Excel, PPT • JPG, PNG, WebP, AVIF, SVG, ICO • MP4, MP3, WAV, GIF • Merge &amp; Compress PDF</text>
+</svg>

@@ -1,0 +1,20 @@
+{
+  "name": "MyConvert - Konversi File Online Tanpa Batas Size",
+  "short_name": "MyConvert",
+  "description": "Platform konversi file terlengkap tanpa batasan ukuran file. Convert PDF ke Word, Excel, PPT, JPG ke PNG, WebP, AVIF, ICO, MP4 ke MP3, WAV, GIF, dan PDF Tools gratis.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090D16",
+  "theme_color": "#4F46E5",
+  "orientation": "any",
+  "categories": ["utilities", "productivity"],
+  "lang": "id-ID",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
