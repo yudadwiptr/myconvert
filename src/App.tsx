@@ -25,12 +25,17 @@ import {
   X,
   Sun,
   Moon,
+  ArrowRight,
+  Code2,
+  Film,
+  Presentation,
 } from 'lucide-react';
 import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 import {
   ConversionJob,
   ConversionSettings,
+  FormatCategory,
   PdfSuiteMode,
   PopularToolPreset,
 } from './types/converter';
@@ -57,6 +62,29 @@ import { JobSettingsModal } from './components/JobSettingsModal';
 import { PreviewModal } from './components/PreviewModal';
 import { PdfSuitePanel } from './components/PdfSuitePanel';
 import { PopularToolsSection } from './components/PopularToolsSection';
+
+function getCategorySvgIcon(cat: FormatCategory) {
+  switch (cat) {
+    case 'document':
+      return <FileText className="w-4 h-4" />;
+    case 'spreadsheet':
+      return <Table className="w-4 h-4" />;
+    case 'presentation':
+      return <Presentation className="w-4 h-4" />;
+    case 'image':
+      return <ImageIcon className="w-4 h-4" />;
+    case 'audio':
+      return <Music className="w-4 h-4" />;
+    case 'video':
+      return <Film className="w-4 h-4" />;
+    case 'data':
+      return <Code2 className="w-4 h-4" />;
+    case 'archive':
+      return <Archive className="w-4 h-4" />;
+    default:
+      return <FileText className="w-4 h-4" />;
+  }
+}
 
 export function App() {
   const [theme, setTheme] = useState<'pastel' | 'dark'>(() => {
@@ -118,7 +146,6 @@ export function App() {
       setPdfSuiteMode(preset.pdfSuiteMode);
     } else {
       setActiveTab('converter');
-      // Update any idle jobs that match the preset's source format
       setJobs((prev) =>
         prev.map((j) => {
           if (j.status === 'idle' && getAvailableTargetFormats(j.sourceExt).includes(preset.toExt)) {
@@ -327,27 +354,35 @@ export function App() {
   const completedCount = jobs.filter((j) => j.status === 'done').length;
 
   return (
-    <div className="min-h-screen bg-[#070B14] text-slate-100 flex flex-col relative overflow-x-hidden transition-colors duration-300">
-      {/* Ambient Background Glows (Pastel Gen-Z Mesh in Light Mode, Cyber Glow in Dark Mode) */}
+    <div className="min-h-screen smooth-theme bg-[#FAF8FF] dark:bg-[#070B14] text-slate-900 dark:text-slate-100 flex flex-col relative overflow-x-hidden">
+      {/* Smooth Cross-Fading Ambient Mesh Background */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden -z-10">
-        {theme === 'pastel' ? (
-          <>
-            <div className="absolute -top-32 left-1/4 w-[650px] h-[420px] bg-purple-300/45 blur-[120px] rounded-full" />
-            <div className="absolute top-12 right-10 w-[520px] h-[420px] bg-pink-300/40 blur-[120px] rounded-full" />
-            <div className="absolute top-[420px] -left-20 w-[500px] h-[450px] bg-teal-200/45 blur-[120px] rounded-full" />
-            <div className="absolute bottom-10 right-1/4 w-[550px] h-[420px] bg-amber-200/40 blur-[130px] rounded-full" />
-          </>
-        ) : (
-          <>
-            <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-indigo-600/15 blur-[140px] rounded-full" />
-            <div className="absolute top-96 -left-32 w-[450px] h-[450px] bg-cyan-500/10 blur-[140px] rounded-full" />
-            <div className="absolute top-80 -right-32 w-[450px] h-[450px] bg-violet-600/10 blur-[140px] rounded-full" />
-          </>
-        )}
+        {/* Pastel Gen-Z Mesh Layer */}
+        <div
+          className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+            theme === 'pastel' ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          <div className="absolute -top-28 left-[12%] w-[620px] h-[440px] bg-gradient-to-br from-purple-200/70 via-pink-200/55 to-indigo-200/50 blur-[110px] rounded-full animate-float-slow" />
+          <div className="absolute top-20 right-[8%] w-[540px] h-[420px] bg-gradient-to-bl from-rose-200/60 via-amber-100/55 to-pink-200/50 blur-[115px] rounded-full" />
+          <div className="absolute top-[460px] -left-24 w-[540px] h-[460px] bg-gradient-to-tr from-emerald-200/50 via-teal-100/55 to-sky-200/50 blur-[120px] rounded-full" />
+          <div className="absolute bottom-0 right-[15%] w-[600px] h-[440px] bg-gradient-to-tl from-violet-200/55 via-sky-200/45 to-pink-100/50 blur-[125px] rounded-full" />
+        </div>
+
+        {/* Cyber Dark Mesh Layer */}
+        <div
+          className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+            theme === 'dark' ? 'opacity-100' : 'opacity-0'
+          }`}
+        >
+          <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-indigo-600/15 blur-[140px] rounded-full" />
+          <div className="absolute top-96 -left-32 w-[450px] h-[450px] bg-cyan-500/10 blur-[140px] rounded-full" />
+          <div className="absolute top-80 -right-32 w-[450px] h-[450px] bg-violet-600/10 blur-[140px] rounded-full" />
+        </div>
       </div>
 
       {/* Sticky Top Navbar */}
-      <header className="sticky top-0 z-40 border-b border-slate-800/80 bg-[#070B14]/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 smooth-theme border-b border-purple-200/70 dark:border-slate-800/80 bg-white/75 dark:bg-[#070B14]/80 backdrop-blur-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
           {/* Brand Logo */}
           <a
@@ -362,13 +397,13 @@ export function App() {
             <img
               src="/favicon.svg"
               alt="MyConvert Logo"
-              className="w-9 h-9 rounded-xl shadow-md shadow-indigo-500/20 group-hover:scale-105 transition"
+              className="w-9 h-9 rounded-xl shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300"
             />
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-600 via-fuchsia-500 to-cyan-500 dark:from-white dark:via-indigo-200 dark:to-cyan-300 bg-clip-text text-transparent">
+            <div className="flex items-center gap-2.5">
+              <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 dark:from-white dark:via-indigo-200 dark:to-cyan-300 bg-clip-text text-transparent">
                 MyConvert
               </span>
-              <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+              <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-700 border border-emerald-300/80 dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30 smooth-theme">
                 <InfinityIcon className="w-3 h-3" />
                 UNLIMITED SIZE
               </span>
@@ -376,14 +411,14 @@ export function App() {
           </a>
 
           {/* Center Mode Switcher */}
-          <div className="flex items-center p-1 rounded-xl bg-slate-900 border border-slate-800">
+          <div className="flex items-center p-1 rounded-2xl smooth-theme bg-purple-100/70 dark:bg-slate-900 border border-purple-200/80 dark:border-slate-800">
             <button
               type="button"
               onClick={() => setActiveTab('converter')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-1.5 ${
                 activeTab === 'converter'
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-500/20'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-white'
               }`}
             >
               <RefreshCw className="w-3.5 h-3.5" />
@@ -392,10 +427,10 @@ export function App() {
             <button
               type="button"
               onClick={() => setActiveTab('pdf-suite')}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-300 flex items-center gap-1.5 ${
                 activeTab === 'pdf-suite'
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-500/20'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-indigo-700 dark:hover:text-white'
               }`}
             >
               <Layers className="w-3.5 h-3.5" />
@@ -403,19 +438,19 @@ export function App() {
             </button>
           </div>
 
-          {/* Right Quick Nav + Pastel/Dark Theme Switcher */}
+          {/* Right Quick Nav + Smooth Theme Switcher */}
           <div className="flex items-center gap-4">
-            <nav className="hidden lg:flex items-center gap-5 text-xs font-semibold text-slate-300">
-              <a href="#popular-tools" className="hover:text-indigo-400 transition">
+            <nav className="hidden lg:flex items-center gap-5 text-xs font-bold text-slate-600 dark:text-slate-300">
+              <a href="#popular-tools" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                 Alat Populer
               </a>
-              <a href="#features" className="hover:text-indigo-400 transition">
+              <a href="#features" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                 Keunggulan
               </a>
-              <a href="#formats" className="hover:text-indigo-400 transition">
+              <a href="#formats" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                 35+ Format
               </a>
-              <a href="#faq" className="hover:text-indigo-400 transition">
+              <a href="#faq" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                 FAQ
               </a>
             </nav>
@@ -424,20 +459,16 @@ export function App() {
               type="button"
               onClick={() => setTheme((prev) => (prev === 'pastel' ? 'dark' : 'pastel'))}
               title="Ganti Tema Pastel Light / Cyber Dark"
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition shadow-sm ${
-                theme === 'pastel'
-                  ? 'bg-gradient-to-r from-pink-100 via-purple-100 to-teal-100 text-purple-900 border-purple-300 hover:brightness-95'
-                  : 'bg-slate-900 text-amber-300 border-slate-700 hover:bg-slate-800'
-              }`}
+              className="group relative inline-flex items-center gap-2 px-3.5 py-1.5 rounded-2xl text-xs font-extrabold border smooth-theme bg-gradient-to-r from-pink-100/90 via-purple-100/90 to-teal-100/90 text-purple-900 border-purple-300/90 hover:shadow-md hover:shadow-purple-500/10 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 dark:text-amber-300 dark:border-slate-700"
             >
               {theme === 'pastel' ? (
                 <>
-                  <Sun className="w-3.5 h-3.5 text-pink-500" />
+                  <Sun className="w-3.5 h-3.5 text-pink-500 transition-transform duration-500 group-hover:rotate-90" />
                   <span>Pastel Mode</span>
                 </>
               ) : (
                 <>
-                  <Moon className="w-3.5 h-3.5 text-amber-300" />
+                  <Moon className="w-3.5 h-3.5 text-amber-300 transition-transform duration-500 group-hover:-rotate-12" />
                   <span>Dark Mode</span>
                 </>
               )}
@@ -450,39 +481,43 @@ export function App() {
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-20 space-y-16">
         {/* Hero Header */}
         <section className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex flex-wrap items-center justify-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 text-xs font-medium text-slate-300">
-            <span className="inline-flex items-center gap-1 text-emerald-400 font-bold">
-              <InfinityIcon className="w-3.5 h-3.5" /> Tanpa Batas Size
+          <div className="inline-flex flex-wrap items-center justify-center gap-3 px-4 py-1.5 rounded-full smooth-theme bg-white/85 dark:bg-slate-900/90 border border-purple-200/80 dark:border-slate-800 shadow-sm text-xs font-bold">
+            <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+              <InfinityIcon className="w-3.5 h-3.5" />
+              <span>Tanpa Batas Size</span>
             </span>
-            <span className="text-slate-600">•</span>
-            <span className="inline-flex items-center gap-1 text-indigo-400 font-bold">
-              <ShieldCheck className="w-3.5 h-3.5" /> Privasi 100% Aman
+            <span className="w-1 h-1 rounded-full bg-purple-300 dark:bg-slate-700" />
+            <span className="inline-flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Privasi 100% Aman</span>
             </span>
-            <span className="text-slate-600">•</span>
-            <span className="inline-flex items-center gap-1 text-amber-400 font-bold">
-              <Zap className="w-3.5 h-3.5" /> Gratis Tanpa Watermark
+            <span className="w-1 h-1 rounded-full bg-purple-300 dark:bg-slate-700" />
+            <span className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+              <Zap className="w-3.5 h-3.5" />
+              <span>Gratis Tanpa Watermark</span>
             </span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
             {activePreset ? (
               <>
-                Konversi <span className="text-indigo-400">{activePreset.title}</span>{' '}
-                <span className="bg-gradient-to-r from-fuchsia-500 via-indigo-500 to-teal-500 dark:from-cyan-300 dark:to-indigo-400 bg-clip-text text-transparent">
+                Konversi{' '}
+                <span className="text-indigo-600 dark:text-indigo-400">{activePreset.title}</span>{' '}
+                <span className="bg-gradient-to-r from-indigo-600 via-fuchsia-600 to-pink-500 dark:from-cyan-300 dark:to-indigo-400 bg-clip-text text-transparent">
                   Tanpa Batas Ukuran
                 </span>
               </>
             ) : (
               <>
                 Konversi Semua Format File{' '}
-                <span className="bg-gradient-to-r from-indigo-600 via-fuchsia-500 to-teal-500 dark:from-indigo-400 dark:via-purple-300 dark:to-cyan-300 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 dark:from-indigo-400 dark:via-purple-300 dark:to-cyan-300 bg-clip-text text-transparent">
                   Tanpa Batasan Size
                 </span>
               </>
             )}
           </h1>
 
-          <p className="text-sm sm:text-base text-slate-400 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed font-medium">
             {activePreset
               ? activePreset.subtitle
               : 'Ubah PDF ke Word (.docx), Excel (.xlsx), PowerPoint (.pptx), Gambar (JPG, PNG, WebP, AVIF, SVG, ICO, HEIC), hingga Video & Audio (MP4, MP3, WAV, GIF) langsung dengan kecepatan tinggi.'}
@@ -493,7 +528,7 @@ export function App() {
               <button
                 type="button"
                 onClick={() => setActivePreset(null)}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-400 hover:text-white transition"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full smooth-theme bg-purple-100/80 dark:bg-slate-900 border border-purple-300 dark:border-slate-800 text-xs font-bold text-purple-900 dark:text-slate-300 hover:bg-purple-200/80 dark:hover:text-white"
               >
                 <span>Mode Fokus: {activePreset.title}</span>
                 <X className="w-3.5 h-3.5" />
@@ -507,7 +542,7 @@ export function App() {
           {activeTab === 'pdf-suite' ? (
             <PdfSuitePanel initialMode={pdfSuiteMode} />
           ) : (
-            <div className="rounded-3xl border border-slate-800/90 bg-slate-900/75 backdrop-blur-xl shadow-2xl shadow-indigo-950/30 overflow-hidden">
+            <div className="rounded-3xl smooth-theme border border-purple-200/90 dark:border-slate-800/90 bg-white/80 dark:bg-slate-900/75 backdrop-blur-2xl shadow-[0_20px_60px_-15px_rgba(139,92,246,0.14)] dark:shadow-2xl dark:shadow-indigo-950/30 overflow-hidden">
               {/* Hidden file input */}
               <input
                 ref={fileInputRef}
@@ -532,102 +567,113 @@ export function App() {
                   setIsDragging(false);
                   if (e.dataTransfer.files) addFilesToQueue(e.dataTransfer.files);
                 }}
-                className={`transition-all duration-200 p-6 sm:p-10 text-center border-b border-slate-800/80 ${
+                className={`smooth-theme p-6 sm:p-10 text-center border-b border-purple-100 dark:border-slate-800/80 ${
                   isDragging
-                    ? 'bg-indigo-600/15 border-indigo-500'
-                    : 'bg-gradient-to-b from-slate-900/50 to-slate-950/50'
+                    ? 'bg-indigo-500/10 border-indigo-500'
+                    : 'bg-gradient-to-b from-purple-50/40 via-pink-50/25 to-sky-50/35 dark:from-slate-900/50 dark:to-slate-950/50'
                 }`}
               >
                 <div
                   onClick={() => fileInputRef.current?.click()}
-                  className="cursor-pointer max-w-2xl mx-auto rounded-2xl border-2 border-dashed border-slate-700 hover:border-indigo-500 bg-slate-950/60 hover:bg-indigo-950/20 transition p-7 sm:p-9 group"
+                  className="cursor-pointer max-w-2xl mx-auto rounded-2xl border-2 border-dashed border-purple-300/90 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-400 bg-white/85 dark:bg-slate-950/60 hover:bg-purple-50/50 dark:hover:bg-indigo-950/20 smooth-theme p-7 sm:p-9 group shadow-sm"
                 >
-                  <div className="w-16 h-16 rounded-2xl bg-indigo-600/15 border border-indigo-500/30 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 group-hover:bg-indigo-600/25 transition">
-                    <Upload className="w-8 h-8 text-indigo-400" />
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 dark:from-indigo-600/20 dark:to-violet-600/20 border border-purple-200 dark:border-indigo-500/30 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <Upload className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
                   </div>
 
-                  <div className="text-lg sm:text-xl font-extrabold text-white">
+                  <div className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white">
                     Pilih File atau Tarik & Lepas (Drag & Drop) ke Sini
                   </div>
-                  <p className="text-xs sm:text-sm text-slate-400 mt-1.5">
+                  <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1.5 font-medium">
                     Mendukung PDF, Word, Excel, PPT, JPG, PNG, WebP, AVIF, HEIC, SVG, ICO, MP4, MP3, WAV, JSON, CSV, ZIP
                   </p>
 
-                  <div className="mt-5 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 group-hover:bg-indigo-500 text-white text-sm font-bold shadow-lg shadow-indigo-600/30 transition">
+                  <div className="mt-5 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 group-hover:from-indigo-500 group-hover:to-purple-500 text-white text-sm font-bold shadow-lg shadow-indigo-500/25 transition-all duration-300">
                     <Plus className="w-4 h-4" />
                     <span>Pilih File dari Perangkat</span>
                   </div>
                 </div>
 
-                {/* Quick 1-Click Sample Demo Files Bar */}
+                {/* Quick 1-Click Sample Demo Files Bar (All SVG Icons) */}
                 <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-                  <span className="text-xs text-slate-400 mr-1 flex items-center gap-1">
-                    <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-                    Uji Coba Instan (1-Klik Sample):
+                  <span className="text-xs font-bold text-slate-500 dark:text-slate-400 mr-1 inline-flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
+                    <span>Uji Coba Instan (1-Klik Sample):</span>
                   </span>
                   <button
                     type="button"
                     onClick={() => addFilesToQueue([createSamplePdfFile()], 'docx')}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-rose-500/10 text-rose-300 border border-rose-500/25 hover:bg-rose-500/20 transition"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-100/90 text-rose-700 border border-rose-200 hover:bg-rose-200/80 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/25 dark:hover:bg-rose-500/20 smooth-theme"
                   >
                     <FileText className="w-3.5 h-3.5" />
-                    Sample PDF &rarr; Word
+                    <span>Sample PDF</span>
+                    <ArrowRight className="w-3 h-3 opacity-75" />
+                    <span>Word</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => addFilesToQueue([createSamplePdfFile()], 'xlsx')}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/25 hover:bg-emerald-500/20 transition"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-100/90 text-emerald-700 border border-emerald-200 hover:bg-emerald-200/80 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/25 dark:hover:bg-emerald-500/20 smooth-theme"
                   >
                     <Table className="w-3.5 h-3.5" />
-                    Sample PDF &rarr; Excel
+                    <span>Sample PDF</span>
+                    <ArrowRight className="w-3 h-3 opacity-75" />
+                    <span>Excel</span>
                   </button>
                   <button
                     type="button"
                     onClick={async () => addFilesToQueue([await createSampleWordFile()], 'pdf')}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-500/10 text-blue-300 border border-blue-500/25 hover:bg-blue-500/20 transition"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-100/90 text-blue-700 border border-blue-200 hover:bg-blue-200/80 dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/25 dark:hover:bg-blue-500/20 smooth-theme"
                   >
                     <FileText className="w-3.5 h-3.5" />
-                    Sample Word &rarr; PDF
+                    <span>Sample Word</span>
+                    <ArrowRight className="w-3 h-3 opacity-75" />
+                    <span>PDF</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => addFilesToQueue([createSampleExcelFile()], 'pdf')}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-teal-500/10 text-teal-300 border border-teal-500/25 hover:bg-teal-500/20 transition"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-100/90 text-teal-700 border border-teal-200 hover:bg-teal-200/80 dark:bg-teal-500/10 dark:text-teal-300 dark:border-teal-500/25 dark:hover:bg-teal-500/20 smooth-theme"
                   >
                     <Table className="w-3.5 h-3.5" />
-                    Sample Excel &rarr; PDF
+                    <span>Sample Excel</span>
+                    <ArrowRight className="w-3 h-3 opacity-75" />
+                    <span>PDF</span>
                   </button>
                   <button
                     type="button"
                     onClick={async () => addFilesToQueue([await createSampleImageFile()], 'webp')}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-sky-500/10 text-sky-300 border border-sky-500/25 hover:bg-sky-500/20 transition"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-sky-100/90 text-sky-700 border border-sky-200 hover:bg-sky-200/80 dark:bg-sky-500/10 dark:text-sky-300 dark:border-sky-500/25 dark:hover:bg-sky-500/20 smooth-theme"
                   >
                     <ImageIcon className="w-3.5 h-3.5" />
-                    Sample PNG &rarr; WebP / ICO
+                    <span>Sample PNG</span>
+                    <ArrowRight className="w-3 h-3 opacity-75" />
+                    <span>WebP / ICO</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => addFilesToQueue([createSampleAudioFile()], 'wav')}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-purple-500/10 text-purple-300 border border-purple-500/25 hover:bg-purple-500/20 transition"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-purple-100/90 text-purple-700 border border-purple-200 hover:bg-purple-200/80 dark:bg-purple-500/10 dark:text-purple-300 dark:border-purple-500/25 dark:hover:bg-purple-500/20 smooth-theme"
                   >
                     <Music className="w-3.5 h-3.5" />
-                    Sample Audio
+                    <span>Sample Audio</span>
                   </button>
                 </div>
               </div>
 
-              {/* Queued Files List (Convertio / CloudConvert Style Matrix) */}
+              {/* Queued Files List */}
               {jobs.length > 0 && (
                 <div className="p-4 sm:p-6 space-y-4">
                   {/* Top Batch Toolbar */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-800">
+                  <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-purple-100 dark:border-slate-800">
                     <div className="flex items-center gap-3">
-                      <span className="text-xs sm:text-sm font-bold text-white">
+                      <span className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-white">
                         Antrean File ({jobs.length})
                       </span>
                       {completedCount > 0 && (
-                        <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
-                          {completedCount} Selesai
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-300 dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>{completedCount} Selesai</span>
                         </span>
                       )}
                     </div>
@@ -635,8 +681,10 @@ export function App() {
                     <div className="flex flex-wrap items-center gap-2.5">
                       {/* Convert All To Selector */}
                       {jobs.length > 1 && commonTargetFormats.length > 0 && (
-                        <div className="flex items-center gap-2 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5">
-                          <span className="text-xs text-slate-400">Ubah semua ke:</span>
+                        <div className="flex items-center gap-2 bg-purple-50 dark:bg-slate-950 border border-purple-200 dark:border-slate-800 rounded-xl px-3 py-1.5">
+                          <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+                            Ubah semua ke:
+                          </span>
                           <select
                             value=""
                             onChange={(e) => {
@@ -651,13 +699,13 @@ export function App() {
                                 }))
                               );
                             }}
-                            className="bg-transparent text-xs font-bold text-indigo-400 focus:outline-none uppercase cursor-pointer"
+                            className="bg-transparent text-xs font-extrabold text-indigo-600 dark:text-indigo-400 focus:outline-none uppercase cursor-pointer"
                           >
-                            <option value="" className="bg-slate-900 text-slate-400">
+                            <option value="" className="bg-white dark:bg-slate-900 text-slate-500">
                               Pilih...
                             </option>
                             {commonTargetFormats.map((ext) => (
-                              <option key={ext} value={ext} className="bg-slate-900 text-white">
+                              <option key={ext} value={ext} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
                                 .{ext.toUpperCase()}
                               </option>
                             ))}
@@ -668,19 +716,19 @@ export function App() {
                       <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 transition"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-purple-100/80 hover:bg-purple-200/80 text-purple-900 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 smooth-theme"
                       >
                         <Plus className="w-3.5 h-3.5" />
-                        Tambah File
+                        <span>Tambah File</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={clearAllJobs}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-rose-400 hover:bg-rose-500/10 transition"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-100/70 dark:hover:bg-rose-500/10 smooth-theme"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
-                        Hapus Semua
+                        <span>Hapus Semua</span>
                       </button>
                     </div>
                   </div>
@@ -694,27 +742,32 @@ export function App() {
                       return (
                         <div
                           key={job.id}
-                          className="rounded-2xl bg-slate-950/85 border border-slate-800/90 hover:border-slate-700/80 p-3.5 sm:px-5 transition flex flex-col lg:flex-row lg:items-center justify-between gap-4"
+                          className="rounded-2xl smooth-theme bg-purple-50/55 dark:bg-slate-950/85 border border-purple-200/80 dark:border-slate-800/90 hover:border-purple-300 dark:hover:border-slate-700/80 p-3.5 sm:px-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4"
                         >
-                          {/* Left: File name & source badge */}
+                          {/* Left: File icon, name & source badge */}
                           <div className="flex items-center gap-3 min-w-0 flex-1">
                             <span
-                              className={`px-2.5 py-1.5 rounded-xl text-xs font-mono font-extrabold uppercase border shrink-0 ${
-                                srcInfo?.badgeColor || 'bg-slate-800 text-slate-300 border-slate-700'
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-mono font-extrabold uppercase border shrink-0 ${
+                                srcInfo?.badgeColor ||
+                                'bg-slate-200 text-slate-700 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
                               }`}
                             >
-                              .{job.sourceExt}
+                              {getCategorySvgIcon(job.sourceCategory)}
+                              <span>.{job.sourceExt}</span>
                             </span>
                             <div className="min-w-0 flex-1">
-                              <div className="text-sm font-bold text-white truncate" title={job.file.name}>
+                              <div
+                                className="text-sm font-bold text-slate-900 dark:text-white truncate"
+                                title={job.file.name}
+                              >
                                 {job.file.name}
                               </div>
-                              <div className="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
+                              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-medium">
                                 <span>{formatBytes(job.file.size)}</span>
                                 {job.resultSize && (
                                   <>
-                                    <span>&rarr;</span>
-                                    <span className="text-emerald-400 font-semibold">
+                                    <ArrowRight className="w-3 h-3 text-slate-400" />
+                                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">
                                       {formatBytes(job.resultSize)}
                                     </span>
                                   </>
@@ -725,13 +778,15 @@ export function App() {
 
                           {/* Middle: Target Format Picker & Settings Gear */}
                           <div className="flex items-center gap-2.5 shrink-0">
-                            <span className="text-xs text-slate-400">ubah ke</span>
+                            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                              ubah ke
+                            </span>
                             <button
                               type="button"
                               onClick={() => setPickerJobId(job.id)}
-                              className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-mono font-extrabold uppercase transition ${
+                              className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl border text-xs font-mono font-extrabold uppercase smooth-theme ${
                                 dstInfo?.badgeColor ||
-                                'bg-indigo-600/20 text-indigo-300 border-indigo-500/30'
+                                'bg-indigo-100 text-indigo-700 border-indigo-300 dark:bg-indigo-600/20 dark:text-indigo-300 dark:border-indigo-500/30'
                               } hover:scale-105`}
                             >
                               <span>.{job.targetExt}</span>
@@ -742,7 +797,7 @@ export function App() {
                               type="button"
                               onClick={() => setSettingsJobId(job.id)}
                               title="Pengaturan Lanjutan (Kualitas, DPI, Mode PDF ke Word, Resize)"
-                              className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-indigo-500/50 transition"
+                              className="p-2 rounded-xl smooth-theme bg-white dark:bg-slate-900 border border-purple-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-white hover:border-indigo-400"
                             >
                               <Sliders className="w-4 h-4" />
                             </button>
@@ -754,26 +809,26 @@ export function App() {
                               <button
                                 type="button"
                                 onClick={() => runSingleJob(job)}
-                                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 hover:bg-indigo-600 hover:text-white transition"
+                                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-100 text-indigo-700 border border-indigo-300 hover:bg-indigo-600 hover:text-white dark:bg-indigo-600/20 dark:text-indigo-300 dark:border-indigo-500/30 dark:hover:bg-indigo-600 dark:hover:text-white smooth-theme"
                               >
                                 <Play className="w-3.5 h-3.5" />
-                                Konversi
+                                <span>Konversi</span>
                               </button>
                             )}
 
                             {job.status === 'converting' && (
                               <div className="flex-1 max-w-[220px] space-y-1">
                                 <div className="flex items-center justify-between text-[11px]">
-                                  <span className="text-indigo-300 font-medium truncate">
+                                  <span className="text-indigo-600 dark:text-indigo-300 font-semibold truncate">
                                     {job.statusMessage || 'Memproses...'}
                                   </span>
-                                  <span className="font-mono font-bold text-indigo-400">
+                                  <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400">
                                     {job.progress}%
                                   </span>
                                 </div>
-                                <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                                <div className="w-full h-2 rounded-full bg-purple-200/70 dark:bg-slate-800 overflow-hidden">
                                   <div
-                                    className="h-full bg-gradient-to-r from-indigo-500 to-cyan-400 transition-all duration-200"
+                                    className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 transition-all duration-300"
                                     style={{ width: `${job.progress}%` }}
                                   />
                                 </div>
@@ -782,7 +837,7 @@ export function App() {
 
                             {job.status === 'done' && (
                               <div className="flex items-center gap-2">
-                                <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-400 mr-1">
+                                <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 mr-1">
                                   <CheckCircle2 className="w-4 h-4" />
                                   <span className="hidden sm:inline">Selesai</span>
                                 </span>
@@ -790,7 +845,7 @@ export function App() {
                                   type="button"
                                   onClick={() => setPreviewJobId(job.id)}
                                   title="Lihat Pratinjau Hasil"
-                                  className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-900 border border-slate-700 text-slate-200 hover:bg-slate-800 transition"
+                                  className="inline-flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold smooth-theme bg-white dark:bg-slate-900 border border-purple-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-slate-800"
                                 >
                                   <Eye className="w-3.5 h-3.5" />
                                   <span>Preview</span>
@@ -798,7 +853,7 @@ export function App() {
                                 <button
                                   type="button"
                                   onClick={() => handleDownloadJob(job)}
-                                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 transition"
+                                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 smooth-theme"
                                 >
                                   <Download className="w-3.5 h-3.5" />
                                   <span>Download</span>
@@ -807,7 +862,7 @@ export function App() {
                             )}
 
                             {job.status === 'error' && (
-                              <div className="flex items-center gap-2 text-rose-400 text-xs">
+                              <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 text-xs">
                                 <AlertCircle className="w-4 h-4 shrink-0" />
                                 <span className="truncate max-w-[160px]" title={job.errorMessage}>
                                   {job.errorMessage || 'Gagal'}
@@ -815,7 +870,7 @@ export function App() {
                                 <button
                                   type="button"
                                   onClick={() => runSingleJob(job)}
-                                  className="px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-200 font-semibold hover:bg-rose-500/30"
+                                  className="px-2.5 py-1 rounded-lg bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-200 font-bold hover:bg-rose-200"
                                 >
                                   Ulangi
                                 </button>
@@ -826,7 +881,7 @@ export function App() {
                               type="button"
                               onClick={() => removeJob(job.id)}
                               title="Hapus dari daftar"
-                              className="p-2 rounded-xl text-slate-500 hover:text-rose-400 hover:bg-slate-900 transition"
+                              className="p-2 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-slate-900 smooth-theme"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -837,9 +892,9 @@ export function App() {
                   </div>
 
                   {/* Bottom Master Action Bar */}
-                  <div className="pt-3 flex flex-wrap items-center justify-between gap-4 border-t border-slate-800/80">
-                    <div className="text-xs text-slate-400 flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <div className="pt-3 flex flex-wrap items-center justify-between gap-4 border-t border-purple-100 dark:border-slate-800/80">
+                    <div className="text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                       <span>Diproses 100% lokal di perangkat Anda • Tanpa batas ukuran file</span>
                     </div>
 
@@ -849,7 +904,7 @@ export function App() {
                           type="button"
                           onClick={handleDownloadAllZip}
                           disabled={isZippingAll}
-                          className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/25 transition"
+                          className="inline-flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/25 smooth-theme"
                         >
                           {isZippingAll ? (
                             <Loader2 className="w-4 h-4 animate-spin" />
@@ -865,7 +920,7 @@ export function App() {
                           type="button"
                           onClick={handleConvertAll}
                           disabled={convertingCount > 0}
-                          className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-extrabold bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 disabled:opacity-50 text-white shadow-xl shadow-indigo-600/30 transition"
+                          className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl text-sm font-extrabold bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:opacity-50 text-white shadow-xl shadow-indigo-600/25 smooth-theme"
                         >
                           {convertingCount > 0 ? (
                             <>
@@ -898,23 +953,26 @@ export function App() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800/80 bg-slate-950/80 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+      <footer className="smooth-theme border-t border-purple-200/70 dark:border-slate-800/80 bg-white/75 dark:bg-slate-950/80 backdrop-blur-xl py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
           <div className="flex items-center gap-2.5">
             <img src="/favicon.svg" alt="MyConvert" className="w-6 h-6 rounded-lg" />
-            <span className="font-bold text-white">MyConvert</span>
+            <span className="font-extrabold text-slate-900 dark:text-white">MyConvert</span>
             <span>— Platform Konversi File Tanpa Batas Size</span>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <span>Zero-Upload Privacy</span>
-            <span className="text-slate-700">•</span>
+          <div className="flex flex-wrap items-center justify-center gap-3 font-medium">
+            <span className="inline-flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+              <span>Zero-Upload Privacy</span>
+            </span>
+            <span className="w-1 h-1 rounded-full bg-purple-300 dark:bg-slate-700" />
             <span>
               Build by{' '}
               <a
                 href="https://yumastudio.digital/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-bold text-indigo-400 hover:text-indigo-300 underline decoration-indigo-500/40 underline-offset-4 transition"
+                className="font-extrabold text-indigo-600 dark:text-indigo-400 hover:text-fuchsia-600 dark:hover:text-indigo-300 underline decoration-indigo-500/40 underline-offset-4 transition-colors"
               >
                 Yuma Studio
               </a>

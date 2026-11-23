@@ -168,9 +168,9 @@ export const PdfSuitePanel: React.FC<PdfSuitePanelProps> = ({ initialMode = 'mer
   const totalInputBytes = files.reduce((acc, f) => acc + f.size, 0);
 
   return (
-    <div className="rounded-3xl border border-slate-800 bg-slate-900/80 backdrop-blur-xl p-5 sm:p-7 shadow-2xl">
+    <div className="rounded-3xl smooth-theme border border-purple-200/90 dark:border-slate-800 bg-white/85 dark:bg-slate-900/80 backdrop-blur-xl p-5 sm:p-7 shadow-[0_20px_60px_-15px_rgba(139,92,246,0.14)] dark:shadow-2xl">
       {/* Sub-navigation pills */}
-      <div className="flex flex-wrap gap-2 pb-5 border-b border-slate-800">
+      <div className="flex flex-wrap gap-2 pb-5 border-b border-purple-100 dark:border-slate-800">
         {suiteTabs.map((tab) => (
           <button
             key={tab.id}
@@ -181,10 +181,10 @@ export const PdfSuitePanel: React.FC<PdfSuitePanelProps> = ({ initialMode = 'mer
               setResultBlob(null);
               setErrorMsg(null);
             }}
-            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition ${
+            className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold smooth-theme ${
               mode === tab.id
-                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/25'
-                : 'bg-slate-950/70 text-slate-400 border border-slate-800 hover:text-white hover:border-slate-700'
+                ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-lg shadow-indigo-600/25'
+                : 'bg-purple-50/70 dark:bg-slate-950/70 text-slate-600 dark:text-slate-400 border border-purple-200/80 dark:border-slate-800 hover:text-indigo-700 dark:hover:text-white'
             }`}
           >
             {tab.icon}
@@ -196,16 +196,20 @@ export const PdfSuitePanel: React.FC<PdfSuitePanelProps> = ({ initialMode = 'mer
       {/* Mode description */}
       <div className="py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h3 className="text-lg font-extrabold text-white">{activeTabInfo.label}</h3>
-          <p className="text-xs text-slate-400 mt-0.5">{activeTabInfo.desc}</p>
+          <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">
+            {activeTabInfo.label}
+          </h3>
+          <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 font-medium">
+            {activeTabInfo.desc}
+          </p>
         </div>
         <button
           type="button"
           onClick={handleLoadSample}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/25 hover:bg-indigo-500/20 transition self-start sm:self-auto"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-100/90 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/25 hover:bg-indigo-200/80 dark:hover:bg-indigo-500/20 smooth-theme self-start sm:self-auto"
         >
           <Sparkles className="w-3.5 h-3.5" />
-          Muat File Contoh
+          <span>Muat File Contoh</span>
         </button>
       </div>
 
@@ -217,7 +221,7 @@ export const PdfSuitePanel: React.FC<PdfSuitePanelProps> = ({ initialMode = 'mer
           handleAddFiles(e.dataTransfer.files);
         }}
         onClick={() => fileInputRef.current?.click()}
-        className="cursor-pointer rounded-2xl border-2 border-dashed border-slate-700 hover:border-indigo-500 bg-slate-950/50 hover:bg-indigo-950/15 transition p-7 text-center"
+        className="cursor-pointer rounded-2xl border-2 border-dashed border-purple-300 dark:border-slate-700 hover:border-indigo-500 bg-purple-50/40 dark:bg-slate-950/50 hover:bg-purple-50/80 dark:hover:bg-indigo-950/15 smooth-theme p-7 text-center"
       >
         <input
           ref={fileInputRef}
@@ -230,20 +234,20 @@ export const PdfSuitePanel: React.FC<PdfSuitePanelProps> = ({ initialMode = 'mer
           }}
           className="hidden"
         />
-        <Upload className="w-9 h-9 text-indigo-400 mx-auto mb-2.5" />
-        <div className="text-sm font-bold text-white">
+        <Upload className="w-9 h-9 text-indigo-600 dark:text-indigo-400 mx-auto mb-2.5" />
+        <div className="text-sm font-extrabold text-slate-900 dark:text-white">
           Klik atau tarik file {mode === 'img2pdf' ? 'Gambar (JPG, PNG, WebP)' : 'PDF'} ke sini
         </div>
-        <p className="text-xs text-slate-400 mt-1">
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
           Tanpa Batas Ukuran File (Unlimited Size) • Diproses langsung di browser Anda
         </p>
       </div>
 
       {/* Mode-specific configuration controls */}
       {mode === 'split' && (
-        <div className="mt-4 p-4 rounded-2xl bg-slate-950/70 border border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="mt-4 p-4 rounded-2xl bg-purple-50/50 dark:bg-slate-950/70 border border-purple-200 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1">
+            <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
               Rentang Halaman yang Diambil
             </label>
             <input
@@ -251,16 +255,16 @@ export const PdfSuitePanel: React.FC<PdfSuitePanelProps> = ({ initialMode = 'mer
               value={pageRange}
               onChange={(e) => setPageRange(e.target.value)}
               placeholder="Contoh: 1-3, 5 atau all"
-              className="w-full px-3 py-2 text-sm rounded-xl bg-slate-900 border border-slate-800 text-white"
+              className="w-full px-3 py-2 text-sm rounded-xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-slate-800 text-slate-900 dark:text-white"
             />
           </div>
           <div className="flex items-center pt-4">
-            <label className="flex items-center gap-2.5 cursor-pointer text-xs text-slate-300">
+            <label className="flex items-center gap-2.5 cursor-pointer text-xs font-semibold text-slate-700 dark:text-slate-300">
               <input
                 type="checkbox"
                 checked={burstToZip}
                 onChange={(e) => setBurstToZip(e.target.checked)}
-                className="w-4 h-4 rounded accent-indigo-500"
+                className="w-4 h-4 rounded accent-indigo-600"
               />
               <span>Simpan setiap halaman sebagai file PDF terpisah di dalam .ZIP</span>
             </label>
@@ -279,22 +283,22 @@ export const PdfSuitePanel: React.FC<PdfSuitePanelProps> = ({ initialMode = 'mer
               key={lv.id}
               type="button"
               onClick={() => setCompressLevel(lv.id as typeof compressLevel)}
-              className={`p-3.5 rounded-xl border text-left transition ${
+              className={`p-3.5 rounded-xl border text-left smooth-theme ${
                 compressLevel === lv.id
-                  ? 'bg-indigo-600/20 border-indigo-500 text-white'
-                  : 'bg-slate-950/70 border-slate-800 text-slate-400 hover:border-slate-700'
+                  ? 'bg-indigo-50 dark:bg-indigo-600/20 border-indigo-500 text-slate-900 dark:text-white'
+                  : 'bg-purple-50/40 dark:bg-slate-950/70 border-purple-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
               }`}
             >
-              <div className="text-xs font-bold">{lv.title}</div>
-              <div className="text-[11px] text-slate-400 mt-1">{lv.desc}</div>
+              <div className="text-xs font-extrabold">{lv.title}</div>
+              <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">{lv.desc}</div>
             </button>
           ))}
         </div>
       )}
 
       {mode === 'watermark' && (
-        <div className="mt-4 p-4 rounded-2xl bg-slate-950/70 border border-slate-800">
-          <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+        <div className="mt-4 p-4 rounded-2xl bg-purple-50/50 dark:bg-slate-950/70 border border-purple-200 dark:border-slate-800">
+          <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
             Teks Watermark Diagonal
           </label>
           <input
@@ -302,7 +306,7 @@ export const PdfSuitePanel: React.FC<PdfSuitePanelProps> = ({ initialMode = 'mer
             value={watermarkText}
             onChange={(e) => setWatermarkText(e.target.value)}
             placeholder="Masukkan teks watermark..."
-            className="w-full px-3.5 py-2 text-sm rounded-xl bg-slate-900 border border-slate-800 text-white"
+            className="w-full px-3.5 py-2 text-sm rounded-xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-slate-800 text-slate-900 dark:text-white"
           />
         </div>
       )}
@@ -310,15 +314,17 @@ export const PdfSuitePanel: React.FC<PdfSuitePanelProps> = ({ initialMode = 'mer
       {/* Selected file list */}
       {files.length > 0 && (
         <div className="mt-5 space-y-2">
-          <div className="flex items-center justify-between text-xs text-slate-400 px-1">
-            <span>{files.length} file dipilih ({formatBytes(totalInputBytes)})</span>
+          <div className="flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400 px-1">
+            <span>
+              {files.length} file dipilih ({formatBytes(totalInputBytes)})
+            </span>
             <button
               type="button"
               onClick={() => {
                 setFiles([]);
                 setResultBlob(null);
               }}
-              className="text-rose-400 hover:underline"
+              className="text-rose-600 dark:text-rose-400 font-bold hover:underline"
             >
               Hapus Semua
             </button>
@@ -328,14 +334,16 @@ export const PdfSuitePanel: React.FC<PdfSuitePanelProps> = ({ initialMode = 'mer
             {files.map((f, idx) => (
               <div
                 key={`${f.name}-${idx}`}
-                className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800"
+                className="flex items-center justify-between gap-3 px-4 py-2.5 rounded-xl bg-purple-50/55 dark:bg-slate-950 border border-purple-200 dark:border-slate-800"
               >
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <span className="w-6 h-6 rounded-lg bg-indigo-500/10 text-indigo-400 text-xs font-mono font-bold flex items-center justify-center">
+                  <span className="w-6 h-6 rounded-lg bg-indigo-100 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 text-xs font-mono font-extrabold flex items-center justify-center">
                     {idx + 1}
                   </span>
                   <div className="min-w-0">
-                    <div className="text-xs font-semibold text-white truncate">{f.name}</div>
+                    <div className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                      {f.name}
+                    </div>
                     <div className="text-[11px] text-slate-500">{formatBytes(f.size)}</div>
                   </div>
                 </div>
@@ -347,7 +355,7 @@ export const PdfSuitePanel: React.FC<PdfSuitePanelProps> = ({ initialMode = 'mer
                         type="button"
                         onClick={() => moveFile(idx, -1)}
                         disabled={idx === 0}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-white disabled:opacity-30"
+                        className="p-1.5 rounded-lg text-slate-500 hover:text-indigo-600 dark:hover:text-white disabled:opacity-30"
                         title="Naikkan urutan"
                       >
                         <ArrowUp className="w-3.5 h-3.5" />
@@ -356,7 +364,7 @@ export const PdfSuitePanel: React.FC<PdfSuitePanelProps> = ({ initialMode = 'mer
                         type="button"
                         onClick={() => moveFile(idx, 1)}
                         disabled={idx === files.length - 1}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-white disabled:opacity-30"
+                        className="p-1.5 rounded-lg text-slate-500 hover:text-indigo-600 dark:hover:text-white disabled:opacity-30"
                         title="Turunkan urutan"
                       >
                         <ArrowDown className="w-3.5 h-3.5" />
@@ -366,7 +374,7 @@ export const PdfSuitePanel: React.FC<PdfSuitePanelProps> = ({ initialMode = 'mer
                   <button
                     type="button"
                     onClick={() => setFiles((prev) => prev.filter((_, i) => i !== idx))}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400"
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
@@ -381,7 +389,7 @@ export const PdfSuitePanel: React.FC<PdfSuitePanelProps> = ({ initialMode = 'mer
               type="button"
               onClick={handleRunSuite}
               disabled={isProcessing}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white shadow-lg shadow-indigo-600/30 transition"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 disabled:opacity-50 text-white shadow-lg shadow-indigo-600/25 smooth-theme"
             >
               {isProcessing ? (
                 <>
@@ -397,28 +405,28 @@ export const PdfSuitePanel: React.FC<PdfSuitePanelProps> = ({ initialMode = 'mer
             </button>
 
             {resultBlob && (
-              <div className="flex items-center gap-3 bg-emerald-500/10 border border-emerald-500/30 px-4 py-2.5 rounded-xl">
-                <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+              <div className="flex items-center gap-3 bg-emerald-100/90 dark:bg-emerald-500/10 border border-emerald-300 dark:border-emerald-500/30 px-4 py-2.5 rounded-xl">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <div className="text-xs">
-                  <div className="font-bold text-white">{resultName}</div>
-                  <div className="text-emerald-300">
+                  <div className="font-extrabold text-slate-900 dark:text-white">{resultName}</div>
+                  <div className="text-emerald-700 dark:text-emerald-300 font-semibold">
                     Ukuran akhir: {formatBytes(resultBlob.size)}
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => saveAs(resultBlob, resultName)}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-colors"
                 >
                   <Download className="w-3.5 h-3.5" />
-                  Download
+                  <span>Download</span>
                 </button>
               </div>
             )}
           </div>
 
           {errorMsg && (
-            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs text-rose-300">
+            <div className="p-3 rounded-xl bg-rose-100 dark:bg-rose-500/10 border border-rose-300 dark:border-rose-500/30 text-xs font-bold text-rose-700 dark:text-rose-300">
               {errorMsg}
             </div>
           )}

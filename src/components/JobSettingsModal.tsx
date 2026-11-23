@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sliders, X, RotateCcw, Check } from 'lucide-react';
+import { Sliders, X, RotateCcw, Check, ArrowRight } from 'lucide-react';
 import { ConversionJob, ConversionSettings } from '../types/converter';
 import { DEFAULT_SETTINGS } from '../data/formats';
 
@@ -23,29 +23,34 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 dark:bg-slate-950/70 backdrop-blur-sm p-4"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-xl rounded-2xl border border-slate-700/80 bg-slate-900 text-slate-100 shadow-2xl overflow-hidden"
+        className="w-full max-w-xl rounded-2xl border border-purple-200 dark:border-slate-700/80 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-2xl overflow-hidden smooth-theme"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-5 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/50">
+        <div className="px-5 py-4 border-b border-purple-100 dark:border-slate-800 flex items-center justify-between bg-purple-50/50 dark:bg-slate-950/50">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
+            <div className="p-2 rounded-xl bg-indigo-100 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 text-indigo-600 dark:text-indigo-400">
               <Sliders className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white">Pengaturan Lanjutan Konversi</h3>
-              <p className="text-xs text-slate-400 truncate max-w-sm">
-                {job.file.name} ({inExt.toUpperCase()} &rarr; {outExt.toUpperCase()})
+              <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
+                Pengaturan Lanjutan Konversi
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 truncate max-w-sm inline-flex items-center gap-1.5">
+                <span className="truncate">{job.file.name}</span>
+                <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400 inline-flex items-center gap-1">
+                  ({inExt.toUpperCase()} <ArrowRight className="w-3 h-3" /> {outExt.toUpperCase()})
+                </span>
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-purple-100 dark:hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -56,7 +61,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
           {/* PDF -> Word Mode */}
           {isPdfSource && outExt === 'docx' && (
             <div className="space-y-2">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-indigo-300">
+              <label className="block text-xs font-extrabold uppercase tracking-wider text-indigo-600 dark:text-indigo-300">
                 Mode Konversi PDF ke Word (.DOCX)
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
@@ -83,14 +88,16 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
                     onClick={() =>
                       setSettings((s) => ({ ...s, pdfToWordMode: m.id as ConversionSettings['pdfToWordMode'] }))
                     }
-                    className={`p-3 rounded-xl border text-left transition ${
+                    className={`p-3 rounded-xl border text-left smooth-theme ${
                       settings.pdfToWordMode === m.id
-                        ? 'bg-indigo-600/20 border-indigo-500 text-white'
-                        : 'bg-slate-950/60 border-slate-800 text-slate-300 hover:border-slate-700'
+                        ? 'bg-indigo-50 dark:bg-indigo-600/20 border-indigo-500 text-slate-900 dark:text-white'
+                        : 'bg-purple-50/40 dark:bg-slate-950/60 border-purple-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:border-indigo-300'
                     }`}
                   >
-                    <div className="text-xs font-bold">{m.title}</div>
-                    <div className="text-[11px] text-slate-400 mt-1 leading-relaxed">{m.desc}</div>
+                    <div className="text-xs font-extrabold">{m.title}</div>
+                    <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                      {m.desc}
+                    </div>
                   </button>
                 ))}
               </div>
@@ -101,7 +108,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
           {isPdfSource && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                   Rentang Halaman PDF
                 </label>
                 <input
@@ -109,15 +116,16 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
                   value={settings.pageRange}
                   onChange={(e) => setSettings((s) => ({ ...s, pageRange: e.target.value }))}
                   placeholder="all atau contoh: 1-3, 5"
-                  className="w-full px-3 py-2 text-sm rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3 py-2 text-sm rounded-xl bg-purple-50/50 dark:bg-slate-950 border border-purple-200 dark:border-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
                 />
                 <span className="text-[11px] text-slate-500 mt-1 block">
-                  Ketik <code className="text-indigo-400">all</code> untuk semua halaman, atau <code className="text-indigo-400">1-3, 5</code>
+                  Ketik <code className="text-indigo-600 dark:text-indigo-400 font-bold">all</code> untuk semua halaman, atau{' '}
+                  <code className="text-indigo-600 dark:text-indigo-400 font-bold">1-3, 5</code>
                 </span>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                   Ketajaman Render PDF (DPI)
                 </label>
                 <select
@@ -128,7 +136,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
                       pdfDpiScale: Number(e.target.value) as ConversionSettings['pdfDpiScale'],
                     }))
                   }
-                  className="w-full px-3 py-2 text-sm rounded-xl bg-slate-950 border border-slate-800 text-white focus:outline-none focus:border-indigo-500"
+                  className="w-full px-3 py-2 text-sm rounded-xl bg-purple-50/50 dark:bg-slate-950 border border-purple-200 dark:border-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-indigo-500"
                 >
                   <option value={1.5}>Standar Cepat (150 DPI)</option>
                   <option value={2}>Tinggi / HD (300 DPI - Direkomendasikan)</option>
@@ -141,7 +149,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
           {/* PDF Target Orientation */}
           {isPdfTarget && !isPdfSource && (
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                 Orientasi Halaman PDF
               </label>
               <div className="grid grid-cols-2 gap-2.5">
@@ -150,10 +158,10 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
                     key={ori}
                     type="button"
                     onClick={() => setSettings((s) => ({ ...s, pdfOrientation: ori }))}
-                    className={`py-2.5 px-3 rounded-xl border text-xs font-semibold capitalize transition ${
+                    className={`py-2.5 px-3 rounded-xl border text-xs font-bold capitalize smooth-theme ${
                       settings.pdfOrientation === ori
-                        ? 'bg-indigo-600/20 border-indigo-500 text-white'
-                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white'
+                        ? 'bg-indigo-50 dark:bg-indigo-600/20 border-indigo-500 text-indigo-900 dark:text-white'
+                        : 'bg-purple-50/40 dark:bg-slate-950 border-purple-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
                     }`}
                   >
                     {ori === 'portrait' ? 'Potret (Tegak)' : 'Lanskap (Mendatar)'}
@@ -168,9 +176,9 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
             <div className="space-y-4">
               {/* Quality Slider */}
               <div>
-                <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
-                  <span className="text-slate-300">Kualitas & Kompresi Gambar</span>
-                  <span className="text-indigo-400 font-mono">{settings.quality}%</span>
+                <div className="flex items-center justify-between text-xs font-bold mb-1.5">
+                  <span className="text-slate-700 dark:text-slate-300">Kualitas & Kompresi Gambar</span>
+                  <span className="text-indigo-600 dark:text-indigo-400 font-mono">{settings.quality}%</span>
                 </div>
                 <input
                   type="range"
@@ -178,7 +186,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
                   max={100}
                   value={settings.quality}
                   onChange={(e) => setSettings((s) => ({ ...s, quality: Number(e.target.value) }))}
-                  className="w-full accent-indigo-500"
+                  className="w-full accent-indigo-600"
                 />
                 <div className="flex justify-between text-[10px] text-slate-500 mt-0.5">
                   <span>Ukuran Kecil (10%)</span>
@@ -190,7 +198,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
               {/* ICO Size Picker */}
               {outExt === 'ico' && (
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                     Dimensi Favicon (.ICO)
                   </label>
                   <div className="grid grid-cols-6 gap-2">
@@ -199,10 +207,10 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
                         key={sz}
                         type="button"
                         onClick={() => setSettings((s) => ({ ...s, icoSize: sz }))}
-                        className={`py-2 rounded-xl border text-xs font-mono font-bold transition ${
+                        className={`py-2 rounded-xl border text-xs font-mono font-bold smooth-theme ${
                           settings.icoSize === sz
                             ? 'bg-indigo-600 text-white border-indigo-500'
-                            : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                            : 'bg-purple-50/50 dark:bg-slate-950 border-purple-200 dark:border-slate-800 text-slate-600 dark:text-slate-400'
                         }`}
                       >
                         {sz}px
@@ -215,13 +223,13 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
               {/* Scale & Filter */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                     Skala Resolusi
                   </label>
                   <select
                     value={settings.scale}
                     onChange={(e) => setSettings((s) => ({ ...s, scale: Number(e.target.value) }))}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-800 text-white"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-purple-50/50 dark:bg-slate-950 border border-purple-200 dark:border-slate-800 text-slate-900 dark:text-white"
                   >
                     <option value={25}>25% (Thumbnail)</option>
                     <option value={50}>50% (Setengah)</option>
@@ -233,7 +241,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                     Filter Efek Warna
                   </label>
                   <select
@@ -241,7 +249,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
                     onChange={(e) =>
                       setSettings((s) => ({ ...s, filter: e.target.value as ConversionSettings['filter'] }))
                     }
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-800 text-white"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-purple-50/50 dark:bg-slate-950 border border-purple-200 dark:border-slate-800 text-slate-900 dark:text-white"
                   >
                     <option value="none">Tanpa Filter (Normal)</option>
                     <option value="grayscale">Hitam Putih (Grayscale)</option>
@@ -252,7 +260,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                     Rotasi Gambar
                   </label>
                   <select
@@ -263,7 +271,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
                         rotation: Number(e.target.value) as ConversionSettings['rotation'],
                       }))
                     }
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-800 text-white"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-purple-50/50 dark:bg-slate-950 border border-purple-200 dark:border-slate-800 text-slate-900 dark:text-white"
                   >
                     <option value={0}>0° (Normal)</option>
                     <option value={90}>Putar 90° Kanan</option>
@@ -281,7 +289,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
               {['mp3', 'wav', 'ogg', 'aac', 'flac'].includes(outExt) && (
                 <>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       Audio Sample Rate
                     </label>
                     <select
@@ -292,7 +300,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
                           audioSampleRate: Number(e.target.value) as ConversionSettings['audioSampleRate'],
                         }))
                       }
-                      className="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-800 text-white"
+                      className="w-full px-3 py-2 text-xs rounded-xl bg-purple-50/50 dark:bg-slate-950 border border-purple-200 dark:border-slate-800 text-slate-900 dark:text-white"
                     >
                       <option value={22050}>22.050 Hz (Voice / Ukuran Kecil)</option>
                       <option value={44100}>44.100 Hz (Standar CD Musik)</option>
@@ -300,7 +308,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       Kanal Suara (Channel)
                     </label>
                     <select
@@ -311,7 +319,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
                           audioChannels: Number(e.target.value) as ConversionSettings['audioChannels'],
                         }))
                       }
-                      className="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-800 text-white"
+                      className="w-full px-3 py-2 text-xs rounded-xl bg-purple-50/50 dark:bg-slate-950 border border-purple-200 dark:border-slate-800 text-slate-900 dark:text-white"
                     >
                       <option value={2}>Stereo (2 Kanal)</option>
                       <option value={1}>Mono (1 Kanal)</option>
@@ -323,7 +331,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
               {outExt === 'gif' && (
                 <>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       Kecepatan Frame GIF (FPS)
                     </label>
                     <select
@@ -334,7 +342,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
                           gifFps: Number(e.target.value) as ConversionSettings['gifFps'],
                         }))
                       }
-                      className="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-800 text-white"
+                      className="w-full px-3 py-2 text-xs rounded-xl bg-purple-50/50 dark:bg-slate-950 border border-purple-200 dark:border-slate-800 text-slate-900 dark:text-white"
                     >
                       <option value={8}>8 FPS (Ringan)</option>
                       <option value={10}>10 FPS (Seimbang)</option>
@@ -342,7 +350,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                       Lebar Resolusi GIF
                     </label>
                     <select
@@ -353,7 +361,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
                           gifWidth: Number(e.target.value) as ConversionSettings['gifWidth'],
                         }))
                       }
-                      className="w-full px-3 py-2 text-xs rounded-xl bg-slate-950 border border-slate-800 text-white"
+                      className="w-full px-3 py-2 text-xs rounded-xl bg-purple-50/50 dark:bg-slate-950 border border-purple-200 dark:border-slate-800 text-slate-900 dark:text-white"
                     >
                       <option value={320}>320 px (Chat / Sticker)</option>
                       <option value={480}>480 px (Standar Web)</option>
@@ -371,30 +379,30 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
               type="checkbox"
               checked={applyToAll}
               onChange={(e) => setApplyToAll(e.target.checked)}
-              className="w-4 h-4 rounded accent-indigo-500"
+              className="w-4 h-4 rounded accent-indigo-600"
             />
-            <span className="text-xs text-slate-300">
+            <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
               Terapkan pengaturan ini ke semua file dalam antrean
             </span>
           </label>
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3.5 border-t border-slate-800 bg-slate-950/60 flex items-center justify-between">
+        <div className="px-5 py-3.5 border-t border-purple-100 dark:border-slate-800 bg-purple-50/40 dark:bg-slate-950/60 flex items-center justify-between">
           <button
             type="button"
             onClick={() => setSettings({ ...DEFAULT_SETTINGS })}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-purple-100 dark:hover:bg-slate-800 transition-colors"
           >
             <RotateCcw className="w-3.5 h-3.5" />
-            Reset Default
+            <span>Reset Default</span>
           </button>
 
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition"
+              className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-purple-100 dark:hover:bg-slate-800 transition-colors"
             >
               Batal
             </button>
@@ -404,10 +412,10 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
                 onSave(job.id, settings, applyToAll);
                 onClose();
               }}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/25 transition"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white shadow-lg shadow-indigo-600/25 transition-all"
             >
               <Check className="w-4 h-4" />
-              Simpan Pengaturan
+              <span>Simpan Pengaturan</span>
             </button>
           </div>
         </div>

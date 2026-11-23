@@ -19,7 +19,6 @@ export const FormatPickerPopover: React.FC<FormatPickerPopoverProps> = ({
   const availableExts = useMemo(() => getAvailableTargetFormats(sourceExt), [sourceExt]);
   const [search, setSearch] = useState('');
 
-  // Determine categories present among available target formats
   const availableCategories = useMemo(() => {
     const cats = new Set<FormatCategory>();
     for (const ext of availableExts) {
@@ -34,14 +33,17 @@ export const FormatPickerPopover: React.FC<FormatPickerPopoverProps> = ({
 
   const filteredFormats = useMemo(() => {
     return availableExts
-      .map((ext) => FORMAT_REGISTRY[ext] || {
-        ext,
-        label: ext.toUpperCase(),
-        mime: 'application/octet-stream',
-        category: 'document' as FormatCategory,
-        description: `File .${ext.toUpperCase()}`,
-        badgeColor: 'bg-slate-500/20 text-slate-300 border-slate-500/30',
-      })
+      .map(
+        (ext) =>
+          FORMAT_REGISTRY[ext] || {
+            ext,
+            label: ext.toUpperCase(),
+            mime: 'application/octet-stream',
+            category: 'document' as FormatCategory,
+            description: `File .${ext.toUpperCase()}`,
+            badgeColor: 'bg-slate-200 text-slate-700 border-slate-300',
+          }
+      )
       .filter((fmt) => {
         if (search.trim()) {
           const q = search.toLowerCase();
@@ -58,15 +60,15 @@ export const FormatPickerPopover: React.FC<FormatPickerPopoverProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 dark:bg-slate-950/65 backdrop-blur-sm p-4"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-lg rounded-2xl border border-slate-700/80 bg-slate-900 shadow-2xl shadow-indigo-950/50 overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+        className="w-full max-w-lg rounded-2xl border border-purple-200 dark:border-slate-700/80 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden smooth-theme"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Header + Search */}
-        <div className="p-3.5 border-b border-slate-800 flex items-center justify-between gap-3 bg-slate-900/90">
+        <div className="p-3.5 border-b border-purple-100 dark:border-slate-800 flex items-center justify-between gap-3 bg-purple-50/50 dark:bg-slate-900/90">
           <div className="relative flex-1">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
@@ -75,12 +77,12 @@ export const FormatPickerPopover: React.FC<FormatPickerPopoverProps> = ({
               onChange={(e) => setSearch(e.target.value)}
               placeholder={`Cari format tujuan untuk .${sourceExt.toUpperCase()}...`}
               autoFocus
-              className="w-full pl-9 pr-3 py-2 text-sm rounded-xl bg-slate-950 border border-slate-800 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+              className="w-full pl-9 pr-3 py-2 text-sm rounded-xl bg-white dark:bg-slate-950 border border-purple-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-indigo-500"
             />
           </div>
           <button
             onClick={onClose}
-            className="px-3 py-1.5 text-xs font-medium text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition"
+            className="px-3 py-1.5 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-purple-100/70 dark:hover:bg-slate-800 transition-colors"
           >
             Tutup
           </button>
@@ -88,18 +90,18 @@ export const FormatPickerPopover: React.FC<FormatPickerPopoverProps> = ({
 
         <div className="flex flex-col sm:flex-row min-h-[260px] max-h-[380px]">
           {/* Left Category Sidebar */}
-          <div className="sm:w-44 border-b sm:border-b-0 sm:border-r border-slate-800 bg-slate-950/50 p-2 flex sm:flex-col gap-1 overflow-x-auto">
+          <div className="sm:w-44 border-b sm:border-b-0 sm:border-r border-purple-100 dark:border-slate-800 bg-purple-50/40 dark:bg-slate-950/50 p-2 flex sm:flex-col gap-1 overflow-x-auto">
             <button
               type="button"
               onClick={() => setActiveCategory('all')}
-              className={`px-3 py-2 rounded-xl text-left text-xs font-semibold transition flex items-center justify-between whitespace-nowrap ${
+              className={`px-3 py-2 rounded-xl text-left text-xs font-bold transition-all flex items-center justify-between whitespace-nowrap ${
                 activeCategory === 'all'
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'text-slate-400 hover:bg-slate-800/70 hover:text-slate-200'
+                  ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-sm'
+                  : 'text-slate-600 dark:text-slate-400 hover:bg-purple-100/70 dark:hover:bg-slate-800/70'
               }`}
             >
               <span>Semua Format</span>
-              <span className="text-[10px] opacity-75 ml-1.5">{availableExts.length}</span>
+              <span className="text-[10px] opacity-80 ml-1.5">{availableExts.length}</span>
             </button>
 
             {availableCategories.map((cat) => {
@@ -112,14 +114,14 @@ export const FormatPickerPopover: React.FC<FormatPickerPopoverProps> = ({
                     setActiveCategory(cat);
                     setSearch('');
                   }}
-                  className={`px-3 py-2 rounded-xl text-left text-xs font-semibold transition flex items-center justify-between whitespace-nowrap ${
+                  className={`px-3 py-2 rounded-xl text-left text-xs font-bold transition-all flex items-center justify-between whitespace-nowrap ${
                     activeCategory === cat && !search
-                      ? 'bg-indigo-600 text-white shadow-sm'
-                      : 'text-slate-400 hover:bg-slate-800/70 hover:text-slate-200'
+                      ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-sm'
+                      : 'text-slate-600 dark:text-slate-400 hover:bg-purple-100/70 dark:hover:bg-slate-800/70'
                   }`}
                 >
                   <span>{CATEGORY_LABELS[cat]?.name || cat}</span>
-                  <span className="text-[10px] opacity-75 ml-1.5">{count}</span>
+                  <span className="text-[10px] opacity-80 ml-1.5">{count}</span>
                 </button>
               );
             })}
@@ -128,7 +130,7 @@ export const FormatPickerPopover: React.FC<FormatPickerPopoverProps> = ({
           {/* Right Format Grid */}
           <div className="flex-1 p-3.5 overflow-y-auto">
             {filteredFormats.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center py-10 text-slate-400 text-sm">
+              <div className="h-full flex flex-col items-center justify-center text-center py-10 text-slate-500 text-sm">
                 Format tidak ditemukan untuk pencarian "{search}"
               </div>
             ) : (
@@ -143,23 +145,23 @@ export const FormatPickerPopover: React.FC<FormatPickerPopoverProps> = ({
                         onSelect(fmt.ext);
                         onClose();
                       }}
-                      className={`group relative p-2.5 rounded-xl border text-left transition flex flex-col justify-between ${
+                      className={`group relative p-2.5 rounded-xl border text-left smooth-theme flex flex-col justify-between ${
                         isSelected
-                          ? 'bg-indigo-600/20 border-indigo-500 text-white shadow-sm'
-                          : 'bg-slate-950/70 border-slate-800/90 text-slate-200 hover:border-indigo-500/50 hover:bg-slate-800/70'
+                          ? 'bg-indigo-50 dark:bg-indigo-600/20 border-indigo-500 text-indigo-950 dark:text-white shadow-sm'
+                          : 'bg-purple-50/40 dark:bg-slate-950/70 border-purple-200/80 dark:border-slate-800/90 text-slate-800 dark:text-slate-200 hover:border-indigo-400 hover:bg-purple-100/50 dark:hover:bg-slate-800/70'
                       }`}
                     >
                       <div className="flex items-center justify-between w-full">
-                        <span className="text-sm font-bold tracking-wide uppercase font-mono">
+                        <span className="text-sm font-extrabold tracking-wide uppercase font-mono">
                           .{fmt.ext}
                         </span>
                         {isSelected ? (
-                          <Check className="w-4 h-4 text-indigo-400" />
+                          <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                         ) : (
-                          <Sparkles className="w-3.5 h-3.5 text-slate-600 group-hover:text-indigo-400 transition" />
+                          <Sparkles className="w-3.5 h-3.5 text-purple-300 dark:text-slate-600 group-hover:text-indigo-500 transition-colors" />
                         )}
                       </div>
-                      <span className="text-[11px] text-slate-400 truncate mt-1">
+                      <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-1">
                         {fmt.description}
                       </span>
                     </button>

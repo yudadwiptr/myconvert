@@ -29,24 +29,24 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({ job, onDownload, onC
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 dark:bg-slate-950/75 backdrop-blur-sm p-4"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-3xl rounded-2xl border border-slate-700/80 bg-slate-900 text-slate-100 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]"
+        className="w-full max-w-3xl rounded-2xl border border-purple-200 dark:border-slate-700/80 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-2xl overflow-hidden flex flex-col max-h-[85vh] smooth-theme"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+        <div className="px-5 py-3.5 border-b border-purple-100 dark:border-slate-800 flex items-center justify-between bg-purple-50/50 dark:bg-slate-950/60">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+            <div className="p-2 rounded-xl bg-emerald-100 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
               <Eye className="w-4 h-4" />
             </div>
             <div className="min-w-0">
-              <h3 className="text-sm font-bold text-white truncate">
+              <h3 className="text-sm font-extrabold text-slate-900 dark:text-white truncate">
                 Pratinjau Hasil: {job.resultFileName}
               </h3>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Ukuran hasil: {formatBytes(job.resultSize)} • Format .{ext.toUpperCase()}
               </p>
             </div>
@@ -55,14 +55,14 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({ job, onDownload, onC
           <div className="flex items-center gap-2">
             <button
               onClick={() => onDownload(job)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition-colors"
             >
               <Download className="w-3.5 h-3.5" />
-              Download File
+              <span>Download File</span>
             </button>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-purple-100 dark:hover:bg-slate-800 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -70,12 +70,12 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({ job, onDownload, onC
         </div>
 
         {/* Content */}
-        <div className="p-5 overflow-auto flex-1 flex items-center justify-center bg-slate-950/50 min-h-[320px]">
+        <div className="p-5 overflow-auto flex-1 flex items-center justify-center bg-purple-50/30 dark:bg-slate-950/50 min-h-[320px]">
           {isImage && job.resultUrl && (
             <img
               src={job.resultUrl}
               alt={job.resultFileName}
-              className="max-h-[62vh] max-w-full object-contain rounded-xl border border-slate-800 shadow-lg bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:16px_16px]"
+              className="max-h-[62vh] max-w-full object-contain rounded-xl border border-purple-200 dark:border-slate-800 shadow-lg"
             />
           )}
 
@@ -83,13 +83,13 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({ job, onDownload, onC
             <iframe
               src={job.resultUrl}
               title={job.resultFileName}
-              className="w-full h-[62vh] rounded-xl border border-slate-800 bg-white"
+              className="w-full h-[62vh] rounded-xl border border-purple-200 dark:border-slate-800 bg-white"
             />
           )}
 
           {isAudio && job.resultUrl && (
-            <div className="w-full max-w-md p-6 rounded-2xl bg-slate-900 border border-slate-800 text-center space-y-4">
-              <div className="text-sm font-semibold text-slate-200">{job.resultFileName}</div>
+            <div className="w-full max-w-md p-6 rounded-2xl bg-white dark:bg-slate-900 border border-purple-200 dark:border-slate-800 text-center space-y-4">
+              <div className="text-sm font-bold text-slate-900 dark:text-slate-200">{job.resultFileName}</div>
               <audio controls src={job.resultUrl} className="w-full" autoPlay />
             </div>
           )}
@@ -99,25 +99,30 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({ job, onDownload, onC
           )}
 
           {isTextReadable && (
-            <pre className="w-full h-[58vh] overflow-auto p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs font-mono text-slate-200 leading-relaxed">
+            <pre className="w-full h-[58vh] overflow-auto p-4 rounded-xl bg-white dark:bg-slate-950 border border-purple-200 dark:border-slate-800 text-xs font-mono text-slate-800 dark:text-slate-200 leading-relaxed">
               {textPreview ?? 'Memuat pratinjau teks...'}
             </pre>
           )}
 
           {!isImage && !isPdf && !isAudio && !isVideo && !isTextReadable && (
             <div className="text-center py-12 space-y-3 max-w-md">
-              <FileText className="w-12 h-12 text-indigo-400 mx-auto" />
-              <div className="text-base font-bold text-white">{job.resultFileName}</div>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <FileText className="w-12 h-12 text-indigo-600 dark:text-indigo-400 mx-auto" />
+              <div className="text-base font-extrabold text-slate-900 dark:text-white">
+                {job.resultFileName}
+              </div>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                 File dokumen biner (.{ext.toUpperCase()}) sebesar{' '}
-                <strong className="text-slate-200">{formatBytes(job.resultSize)}</strong> telah selesai dibuat dan siap dibuka di aplikasi Microsoft Office / LibreOffice / perangkat Anda.
+                <strong className="text-slate-900 dark:text-slate-200">
+                  {formatBytes(job.resultSize)}
+                </strong>{' '}
+                telah selesai dibuat dan siap dibuka di aplikasi Microsoft Office / LibreOffice / perangkat Anda.
               </p>
               <button
                 onClick={() => onDownload(job)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/25 transition"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/25 transition-all"
               >
                 <Download className="w-4 h-4" />
-                Download Sekarang
+                <span>Download Sekarang</span>
               </button>
             </div>
           )}
