@@ -62,6 +62,7 @@ import { JobSettingsModal } from './components/JobSettingsModal';
 import { PreviewModal } from './components/PreviewModal';
 import { PdfSuitePanel } from './components/PdfSuitePanel';
 import { PopularToolsSection } from './components/PopularToolsSection';
+import { MyConvertLogo } from './components/MyConvertLogo';
 
 function getCategorySvgIcon(cat: FormatCategory) {
   switch (cat) {
@@ -392,22 +393,13 @@ export function App() {
               setActivePreset(null);
               setActiveTab('converter');
             }}
-            className="flex items-center gap-3 group"
+            className="flex items-center gap-2.5 group"
           >
-            <img
-              src="/favicon.svg"
-              alt="MyConvert Logo"
-              className="w-9 h-9 rounded-xl shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300"
-            />
-            <div className="flex items-center gap-2.5">
-              <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-600 via-violet-600 to-fuchsia-600 dark:from-white dark:via-indigo-200 dark:to-cyan-300 bg-clip-text text-transparent">
-                MyConvert
-              </span>
-              <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-700 border border-emerald-300/80 dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30 smooth-theme">
-                <InfinityIcon className="w-3 h-3" />
-                UNLIMITED SIZE
-              </span>
-            </div>
+            <MyConvertLogo size="md" className="group-hover:scale-[1.02] transition-transform duration-300" />
+            <span className="hidden md:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-700 border border-emerald-300/80 dark:bg-emerald-500/15 dark:text-emerald-300 dark:border-emerald-500/30 smooth-theme">
+              <InfinityIcon className="w-3 h-3" />
+              UNLIMITED SIZE
+            </span>
           </a>
 
           {/* Center Mode Switcher */}
@@ -955,9 +947,8 @@ export function App() {
       {/* Footer */}
       <footer className="smooth-theme border-t border-purple-200/70 dark:border-slate-800/80 bg-white/75 dark:bg-slate-950/80 backdrop-blur-xl py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
-          <div className="flex items-center gap-2.5">
-            <img src="/favicon.svg" alt="MyConvert" className="w-6 h-6 rounded-lg" />
-            <span className="font-extrabold text-slate-900 dark:text-white">MyConvert</span>
+          <div className="flex items-center gap-3">
+            <MyConvertLogo size="sm" />
             <span>— Platform Konversi File Tanpa Batas Size</span>
           </div>
           <div className="flex flex-wrap items-center justify-center gap-3 font-medium">
