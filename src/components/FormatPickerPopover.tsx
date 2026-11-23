@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useDialog } from '../hooks/useDialog';
 import { Search, Check, Sparkles } from 'lucide-react';
 import { CATEGORY_LABELS, FORMAT_REGISTRY, getAvailableTargetFormats } from '../data/formats';
 import { FormatCategory } from '../types/converter';
@@ -58,6 +59,8 @@ export const FormatPickerPopover: React.FC<FormatPickerPopoverProps> = ({
       });
   }, [availableExts, activeCategory, search]);
 
+  const dialogRef = useDialog<HTMLDivElement>(onClose);
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 dark:bg-slate-950/65 backdrop-blur-sm p-4"
@@ -66,6 +69,11 @@ export const FormatPickerPopover: React.FC<FormatPickerPopoverProps> = ({
       <div
         className="w-full max-w-lg rounded-2xl border border-purple-200 dark:border-slate-700/80 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden smooth-theme"
         onClick={(e) => e.stopPropagation()}
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Pilih format tujuan"
+        tabIndex={-1}
       >
         {/* Top Header + Search */}
         <div className="p-3.5 border-b border-purple-100 dark:border-slate-800 flex items-center justify-between gap-3 bg-purple-50/50 dark:bg-slate-900/90">

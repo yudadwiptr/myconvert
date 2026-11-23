@@ -23,7 +23,7 @@ import {
   splitPdfFile,
   watermarkPdfFile,
 } from '../engines/pdfSuiteEngine';
-import { createSampleImageFile, createSamplePdfFile, formatBytes } from '../utils/sampleGenerator';
+import { formatBytes } from '../utils/formatBytes';
 
 interface PdfSuitePanelProps {
   initialMode?: PdfSuiteMode;
@@ -107,6 +107,7 @@ export const PdfSuitePanel: React.FC<PdfSuitePanelProps> = ({ initialMode = 'mer
   };
 
   const handleLoadSample = async () => {
+    const { createSampleImageFile, createSamplePdfFile } = await import('../utils/sampleGenerator');
     if (mode === 'img2pdf') {
       const img1 = await createSampleImageFile();
       const img2 = await createSampleImageFile();

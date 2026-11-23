@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDialog } from '../hooks/useDialog';
 import { Sliders, X, RotateCcw, Check, ArrowRight } from 'lucide-react';
 import { ConversionJob, ConversionSettings } from '../types/converter';
 import { DEFAULT_SETTINGS } from '../data/formats';
@@ -21,6 +22,8 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
   const isPdfTarget = outExt === 'pdf';
   const isMediaJob = job.sourceCategory === 'audio' || job.sourceCategory === 'video';
 
+  const dialogRef = useDialog<HTMLDivElement>(onClose);
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 dark:bg-slate-950/70 backdrop-blur-sm p-4"
@@ -29,6 +32,11 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
       <div
         className="w-full max-w-xl rounded-2xl border border-purple-200 dark:border-slate-700/80 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-2xl overflow-hidden smooth-theme"
         onClick={(e) => e.stopPropagation()}
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Pengaturan konversi"
+        tabIndex={-1}
       >
         {/* Header */}
         <div className="px-5 py-4 border-b border-purple-100 dark:border-slate-800 flex items-center justify-between bg-purple-50/50 dark:bg-slate-950/50">
@@ -49,6 +57,7 @@ export const JobSettingsModal: React.FC<JobSettingsModalProps> = ({ job, onSave,
             </div>
           </div>
           <button
+            aria-label="Tutup"
             onClick={onClose}
             className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-purple-100 dark:hover:bg-slate-800 transition-colors"
           >

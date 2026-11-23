@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Upload,
   Sparkles,
@@ -49,20 +49,44 @@ import {
   getDefaultTargetFormat,
 } from './data/formats';
 import { executeConversionJob } from './engines';
-import {
-  createSampleAudioFile,
-  createSampleExcelFile,
-  createSampleImageFile,
-  createSamplePdfFile,
-  createSampleWordFile,
-  formatBytes,
-} from './utils/sampleGenerator';
+import { formatBytes } from './utils/formatBytes';
 import { FormatPickerPopover } from './components/FormatPickerPopover';
 import { JobSettingsModal } from './components/JobSettingsModal';
 import { PreviewModal } from './components/PreviewModal';
-import { PdfSuitePanel } from './components/PdfSuitePanel';
 import { PopularToolsSection } from './components/PopularToolsSection';
 import { MyConvertLogo } from './components/MyConvertLogo';
+
+const PdfSuitePanel = lazy(() =>
+  import('./components/PdfSuitePanel').then((m) => ({ default: m.PdfSuitePanel }))
+);
+
+type SampleKind = 'pdf' | 'word' | 'excel' | 'image' | 'audio';
+
+async function createSample(kind: SampleKind): Promise<File> {
+  const gen = await import('./utils/sampleGenerator');
+  switch (kind) {
+    case 'pdf':
+      return gen.createSamplePdfFile();
+    case 'word':
+      return gen.createSampleWordFile();
+    case 'excel':
+      return gen.createSampleExcelFile();
+    case 'image':
+      return gen.createSampleImageFile();
+    case 'audio':
+      return gen.createSampleAudioFile();
+  }
+}
+
+function readSavedTheme(): 'pastel' | 'dark' {
+  try {
+    const saved = localStorage.getItem('myconvert_theme');
+    if (saved === 'dark' || saved === 'pastel') return saved;
+  } catch {
+    // storage unavailable (private mode etc.)
+  }
+  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'pastel';
+}
 
 function getCategorySvgIcon(cat: FormatCategory) {
   switch (cat) {
@@ -88,10 +112,7 @@ function getCategorySvgIcon(cat: FormatCategory) {
 }
 
 export function App() {
-  const [theme, setTheme] = useState<'pastel' | 'dark'>(() => {
-    const saved = localStorage.getItem('myconvert_theme');
-    return saved === 'dark' ? 'dark' : 'pastel';
-  });
+  const [theme, setTheme] = useState<'pastel' | 'dark'>(readSavedTheme);
   const [activeTab, setActiveTab] = useState<'converter' | 'pdf-suite'>('converter');
   const [pdfSuiteMode, setPdfSuiteMode] = useState<PdfSuiteMode>('merge');
   const [activePreset, setActivePreset] = useState<PopularToolPreset | null>(null);
@@ -103,11 +124,15 @@ export function App() {
     } else {
       root.classList.remove('dark');
     }
-    localStorage.setItem('myconvert_theme', theme);
   }, [theme]);
 
   const handleToggleTheme = (e: React.MouseEvent<HTMLButtonElement>) => {
     const nextTheme = theme === 'pastel' ? 'dark' : 'pastel';
+    try {
+      localStorage.setItem('myconvert_theme', nextTheme);
+    } catch {
+      // ignore
+    }
     const root = document.documentElement;
 
     // Add synchronized CSS transition class
@@ -603,7 +628,16 @@ export function App() {
         {/* Active Workspace: Universal Converter OR PDF Power Suite */}
         <section ref={workspaceRef} className="scroll-mt-20">
           {activeTab === 'pdf-suite' ? (
-            <PdfSuitePanel initialMode={pdfSuiteMode} />
+            <Suspense
+              fallback={
+                <div className="rounded-3xl border border-purple-200/90 dark:border-slate-800/90 bg-white/80 dark:bg-slate-900/75 p-16 flex items-center justify-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Memuat PDF Power Suite...</span>
+                </div>
+              }
+            >
+              <PdfSuitePanel initialMode={pdfSuiteMode} />
+            </Suspense>
           ) : (
             <div className="rounded-3xl smooth-theme border border-purple-200/90 dark:border-slate-800/90 bg-white/80 dark:bg-slate-900/75 backdrop-blur-2xl shadow-[0_20px_60px_-15px_rgba(139,92,246,0.14)] dark:shadow-2xl dark:shadow-indigo-950/30 overflow-hidden">
               {/* Hidden file input */}
@@ -637,8 +671,17 @@ export function App() {
                 }`}
               >
                 <div
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Pilih file untuk dikonversi"
                   onClick={() => fileInputRef.current?.click()}
-                  className="cursor-pointer max-w-2xl mx-auto rounded-2xl border-2 border-dashed border-purple-300/90 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-400 bg-white/85 dark:bg-slate-950/60 hover:bg-purple-50/50 dark:hover:bg-indigo-950/20 smooth-theme p-7 sm:p-9 group shadow-sm"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      fileInputRef.current?.click();
+                    }
+                  }}
+                  className="cursor-pointer focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-500/40 max-w-2xl mx-auto rounded-2xl border-2 border-dashed border-purple-300/90 dark:border-slate-700 hover:border-indigo-500 dark:hover:border-indigo-400 bg-white/85 dark:bg-slate-950/60 hover:bg-purple-50/50 dark:hover:bg-indigo-950/20 smooth-theme p-7 sm:p-9 group shadow-sm"
                 >
                   <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 dark:from-indigo-600/20 dark:to-violet-600/20 border border-purple-200 dark:border-indigo-500/30 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                     <Upload className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
@@ -665,7 +708,7 @@ export function App() {
                   </span>
                   <button
                     type="button"
-                    onClick={() => addFilesToQueue([createSamplePdfFile()], 'docx')}
+                    onClick={async () => addFilesToQueue([await createSample('pdf')], 'docx')}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-100/90 text-rose-700 border border-rose-200 hover:bg-rose-200/80 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/25 dark:hover:bg-rose-500/20 smooth-theme"
                   >
                     <FileText className="w-3.5 h-3.5" />
@@ -675,7 +718,7 @@ export function App() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => addFilesToQueue([createSamplePdfFile()], 'xlsx')}
+                    onClick={async () => addFilesToQueue([await createSample('pdf')], 'xlsx')}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-emerald-100/90 text-emerald-700 border border-emerald-200 hover:bg-emerald-200/80 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/25 dark:hover:bg-emerald-500/20 smooth-theme"
                   >
                     <Table className="w-3.5 h-3.5" />
@@ -685,7 +728,7 @@ export function App() {
                   </button>
                   <button
                     type="button"
-                    onClick={async () => addFilesToQueue([await createSampleWordFile()], 'pdf')}
+                    onClick={async () => addFilesToQueue([await createSample('word')], 'pdf')}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-100/90 text-blue-700 border border-blue-200 hover:bg-blue-200/80 dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/25 dark:hover:bg-blue-500/20 smooth-theme"
                   >
                     <FileText className="w-3.5 h-3.5" />
@@ -695,7 +738,7 @@ export function App() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => addFilesToQueue([createSampleExcelFile()], 'pdf')}
+                    onClick={async () => addFilesToQueue([await createSample('excel')], 'pdf')}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-teal-100/90 text-teal-700 border border-teal-200 hover:bg-teal-200/80 dark:bg-teal-500/10 dark:text-teal-300 dark:border-teal-500/25 dark:hover:bg-teal-500/20 smooth-theme"
                   >
                     <Table className="w-3.5 h-3.5" />
@@ -705,7 +748,7 @@ export function App() {
                   </button>
                   <button
                     type="button"
-                    onClick={async () => addFilesToQueue([await createSampleImageFile()], 'webp')}
+                    onClick={async () => addFilesToQueue([await createSample('image')], 'webp')}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-sky-100/90 text-sky-700 border border-sky-200 hover:bg-sky-200/80 dark:bg-sky-500/10 dark:text-sky-300 dark:border-sky-500/25 dark:hover:bg-sky-500/20 smooth-theme"
                   >
                     <ImageIcon className="w-3.5 h-3.5" />
@@ -715,7 +758,7 @@ export function App() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => addFilesToQueue([createSampleAudioFile()], 'wav')}
+                    onClick={async () => addFilesToQueue([await createSample('audio')], 'wav')}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-purple-100/90 text-purple-700 border border-purple-200 hover:bg-purple-200/80 dark:bg-purple-500/10 dark:text-purple-300 dark:border-purple-500/25 dark:hover:bg-purple-500/20 smooth-theme"
                   >
                     <Music className="w-3.5 h-3.5" />
@@ -754,12 +797,21 @@ export function App() {
                               const val = e.target.value;
                               if (!val) return;
                               setJobs((prev) =>
-                                prev.map((j) => ({
-                                  ...j,
-                                  targetExt: val,
-                                  status: 'idle',
-                                  progress: 0,
-                                }))
+                                prev.map((j) => {
+                                  if (j.status === 'converting' || j.targetExt === val) return j;
+                                  if (j.resultUrl) URL.revokeObjectURL(j.resultUrl);
+                                  return {
+                                    ...j,
+                                    targetExt: val,
+                                    status: 'idle',
+                                    progress: 0,
+                                    resultBlob: undefined,
+                                    resultUrl: undefined,
+                                    resultFileName: undefined,
+                                    resultSize: undefined,
+                                    errorMessage: undefined,
+                                  };
+                                })
                               );
                             }}
                             className="bg-transparent text-xs font-extrabold text-indigo-600 dark:text-indigo-400 focus:outline-none uppercase cursor-pointer"
@@ -860,6 +912,7 @@ export function App() {
                               type="button"
                               onClick={() => setSettingsJobId(job.id)}
                               title="Pengaturan Lanjutan (Kualitas, DPI, Mode PDF ke Word, Resize)"
+                              aria-label="Pengaturan lanjutan"
                               className="p-2 rounded-xl smooth-theme bg-white dark:bg-slate-900 border border-purple-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-white hover:border-indigo-400"
                             >
                               <Sliders className="w-4 h-4" />
@@ -944,6 +997,7 @@ export function App() {
                               type="button"
                               onClick={() => removeJob(job.id)}
                               title="Hapus dari daftar"
+                              aria-label="Hapus dari daftar"
                               className="p-2 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-slate-900 smooth-theme"
                             >
                               <Trash2 className="w-4 h-4" />

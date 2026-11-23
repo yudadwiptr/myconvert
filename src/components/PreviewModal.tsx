@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useDialog } from '../hooks/useDialog';
 import { X, Download, Eye, FileText } from 'lucide-react';
 import { ConversionJob } from '../types/converter';
-import { formatBytes } from '../utils/sampleGenerator';
+import { formatBytes } from '../utils/formatBytes';
 
 interface PreviewModalProps {
   job: ConversionJob;
@@ -27,6 +28,8 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({ job, onDownload, onC
     }
   }, [job.resultBlob, isTextReadable]);
 
+  const dialogRef = useDialog<HTMLDivElement>(onClose);
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 dark:bg-slate-950/75 backdrop-blur-sm p-4"
@@ -35,6 +38,11 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({ job, onDownload, onC
       <div
         className="w-full max-w-3xl rounded-2xl border border-purple-200 dark:border-slate-700/80 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-2xl overflow-hidden flex flex-col max-h-[85vh] smooth-theme"
         onClick={(e) => e.stopPropagation()}
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Pratinjau hasil konversi"
+        tabIndex={-1}
       >
         {/* Header */}
         <div className="px-5 py-3.5 border-b border-purple-100 dark:border-slate-800 flex items-center justify-between bg-purple-50/50 dark:bg-slate-950/60">
@@ -61,6 +69,7 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({ job, onDownload, onC
               <span>Download File</span>
             </button>
             <button
+              aria-label="Tutup"
               onClick={onClose}
               className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-purple-100 dark:hover:bg-slate-800 transition-colors"
             >
