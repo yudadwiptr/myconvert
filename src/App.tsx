@@ -846,13 +846,16 @@ export function App() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800/80 bg-slate-950/80 py-10">
+      <footer className="border-t border-slate-800/80 bg-slate-950/80 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
+          <div className="flex items-center gap-2.5">
             <img src="/favicon.svg" alt="MyConvert" className="w-6 h-6 rounded-lg" />
             <span className="font-bold text-white">MyConvert</span>
             <span>— Platform Konversi File Tanpa Batas Size</span>
-            <span className="hidden sm:inline text-slate-700">|</span>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <span>Zero-Upload Privacy</span>
+            <span className="text-slate-700">•</span>
             <span>
               Build by{' '}
               <a
@@ -861,23 +864,9 @@ export function App() {
                 rel="noopener noreferrer"
                 className="font-bold text-indigo-400 hover:text-indigo-300 underline decoration-indigo-500/40 underline-offset-4 transition"
               >
-                Yuma Studio (yumastudio.digital)
+                Yuma Studio
               </a>
             </span>
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <span>100% Open-Source Browser Engine</span>
-            <span>•</span>
-            <span>Zero-Upload Privacy</span>
-            <span>•</span>
-            <a
-              href="https://yumastudio.digital/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-slate-300 hover:text-white font-semibold transition"
-            >
-              https://yumastudio.digital/
-            </a>
           </div>
         </div>
       </footer>
