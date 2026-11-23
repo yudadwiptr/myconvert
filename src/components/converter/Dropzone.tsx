@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowRight, FileText, Image as ImageIcon, Music, Plus, Sparkles, Table, Upload } from 'lucide-react';
+import { FORMAT_REGISTRY } from '../../data/formats';
 
 type SampleKind = 'pdf' | 'word' | 'excel' | 'image' | 'audio';
 
@@ -30,7 +31,7 @@ const SAMPLES: {
   {
     kind: 'pdf',
     target: 'docx',
-    from: 'Sample PDF',
+    from: 'PDF',
     to: 'Word',
     icon: <FileText className="w-3.5 h-3.5" />,
     className:
@@ -39,7 +40,7 @@ const SAMPLES: {
   {
     kind: 'pdf',
     target: 'xlsx',
-    from: 'Sample PDF',
+    from: 'PDF',
     to: 'Excel',
     icon: <Table className="w-3.5 h-3.5" />,
     className:
@@ -48,7 +49,7 @@ const SAMPLES: {
   {
     kind: 'word',
     target: 'pdf',
-    from: 'Sample Word',
+    from: 'Word',
     to: 'PDF',
     icon: <FileText className="w-3.5 h-3.5" />,
     className:
@@ -57,7 +58,7 @@ const SAMPLES: {
   {
     kind: 'excel',
     target: 'pdf',
-    from: 'Sample Excel',
+    from: 'Excel',
     to: 'PDF',
     icon: <Table className="w-3.5 h-3.5" />,
     className:
@@ -66,8 +67,8 @@ const SAMPLES: {
   {
     kind: 'image',
     target: 'webp',
-    from: 'Sample PNG',
-    to: 'WebP / ICO',
+    from: 'PNG',
+    to: 'WebP',
     icon: <ImageIcon className="w-3.5 h-3.5" />,
     className:
       'bg-sky-100/90 text-sky-700 border-sky-200 hover:bg-sky-200/80 dark:bg-sky-500/10 dark:text-sky-300 dark:border-sky-500/25 dark:hover:bg-sky-500/20',
@@ -75,12 +76,18 @@ const SAMPLES: {
   {
     kind: 'audio',
     target: 'wav',
-    from: 'Sample Audio',
+    from: 'Audio WAV',
     icon: <Music className="w-3.5 h-3.5" />,
     className:
       'bg-purple-100/90 text-purple-700 border-purple-200 hover:bg-purple-200/80 dark:bg-purple-500/10 dark:text-purple-300 dark:border-purple-500/25 dark:hover:bg-purple-500/20',
   },
 ];
+
+/** Highlighted formats shown as chips in the dropzone; the rest are summarised as "+N lainnya". */
+const FEATURED_FORMATS = ['pdf', 'docx', 'xlsx', 'pptx', 'jpg', 'png', 'webp', 'heic', 'svg', 'mp4', 'mp3', 'wav', 'json', 'csv', 'zip'];
+/** Dropped on phones so the chips break into even rows. */
+const DESKTOP_ONLY_FORMATS = new Set(['heic', 'svg', 'wav', 'csv']);
+const OTHER_FORMAT_COUNT = Object.keys(FORMAT_REGISTRY).length - FEATURED_FORMATS.length;
 
 interface DropzoneProps {
   onFiles: (files: FileList | File[], preferredTargetExt?: string) => void;
@@ -126,9 +133,28 @@ export const Dropzone: React.FC<DropzoneProps> = ({ onFiles, onBrowse }) => {
         <div className="text-lg sm:text-xl font-extrabold text-fg">
           Pilih File atau Tarik & Lepas (Drag & Drop) ke Sini
         </div>
-        <p className="text-xs sm:text-sm text-fg-muted mt-1.5 font-medium">
-          Mendukung PDF, Word, Excel, PPT, JPG, PNG, WebP, AVIF, HEIC, SVG, ICO, MP4, MP3, WAV, JSON, CSV, ZIP
-        </p>
+        <p className="text-xs sm:text-sm text-fg-muted mt-1.5 font-medium">Satu atau banyak file sekaligus, tanpa batas ukuran</p>
+
+        <ul className="mt-4 grid grid-cols-4 gap-1.5 max-w-[17rem] sm:flex sm:flex-wrap sm:justify-center sm:max-w-[26rem] mx-auto" aria-label="Format yang didukung">
+          {FEATURED_FORMATS.map((ext) => (
+            <li
+              key={ext}
+              className={`px-2 py-0.5 rounded-md border text-center text-[11px] font-mono font-extrabold uppercase ${
+                DESKTOP_ONLY_FORMATS.has(ext) ? 'hidden sm:block' : ''
+              } ${
+                FORMAT_REGISTRY[ext]?.badgeColor ?? 'bg-sunken text-fg-muted border-line'
+              }`}
+            >
+              {ext}
+            </li>
+          ))}
+          {OTHER_FORMAT_COUNT > 0 && (
+            <li className="px-1 sm:px-2 py-0.5 rounded-md border border-dashed border-line text-center whitespace-nowrap text-[11px] font-bold text-fg-muted">
+              <span className="sm:hidden">+{OTHER_FORMAT_COUNT + DESKTOP_ONLY_FORMATS.size} lagi</span>
+              <span className="hidden sm:inline">+{OTHER_FORMAT_COUNT} lainnya</span>
+            </li>
+          )}
+        </ul>
 
         <div className="mt-5 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 group-hover:from-indigo-500 group-hover:to-purple-500 text-white text-sm font-bold shadow-lg shadow-indigo-500/25 transition-all duration-300">
           <Plus className="w-4 h-4" />
@@ -137,28 +163,30 @@ export const Dropzone: React.FC<DropzoneProps> = ({ onFiles, onBrowse }) => {
       </div>
 
       {/* One-click sample files */}
-      <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
-        <span className="text-xs font-bold text-fg-muted mr-1 inline-flex items-center gap-1.5">
+      <div className="mt-6 max-w-2xl mx-auto">
+        <p className="mb-2.5 text-xs font-bold text-fg-muted inline-flex items-center gap-1.5">
           <Sparkles className="w-3.5 h-3.5 text-accent" />
-          <span>Uji Coba Instan (1-Klik Sample):</span>
-        </span>
-        {SAMPLES.map((sample) => (
-          <button
-            key={`${sample.kind}-${sample.target}`}
-            type="button"
-            onClick={async () => onFiles([await createSample(sample.kind)], sample.target)}
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border smooth-theme ${sample.className}`}
-          >
-            {sample.icon}
-            <span>{sample.from}</span>
-            {sample.to && (
-              <>
-                <ArrowRight className="w-3 h-3 opacity-75" />
-                <span>{sample.to}</span>
-              </>
-            )}
-          </button>
-        ))}
+          <span>Belum punya file? Coba dengan file contoh (1 klik)</span>
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {SAMPLES.map((sample) => (
+            <button
+              key={`${sample.kind}-${sample.target}`}
+              type="button"
+              onClick={async () => onFiles([await createSample(sample.kind)], sample.target)}
+              className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border smooth-theme ${sample.className}`}
+            >
+              {sample.icon}
+              <span>{sample.from}</span>
+              {sample.to && (
+                <>
+                  <ArrowRight className="w-3 h-3 opacity-75" />
+                  <span>{sample.to}</span>
+                </>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
